@@ -1,16 +1,16 @@
-import React from "react";
+import React, { Component, Fragment } from "react";
 import "./VocabBuilder.css";
 
 import firebase from "../../firebase";
 import DropZone from "../DropZone/DropZone";
 import WordsList from "../WordsList/WordsList";
 
-class VocabBuilder extends React.Component {
+class VocabBuilder extends Component {
 	state = {
 		words: null,
-		ignore: {},
-		learned: {},
-		learn: {},
+		ignore: null,
+		learned: null,
+		learn: null,
 		ignoreRef: firebase.database().ref("ignore"),
 		learnRef: firebase.database().ref("learn"),
 		learnedRef: firebase.database().ref("learned")
@@ -45,8 +45,24 @@ class VocabBuilder extends React.Component {
 			word =>
 				word.length > 2 && !this.state.ignore[word] && /^[a-zA-Z]+$/.test(word)
 		);
-		words = Array.from(new Set(words));
-		words = words.sort();
+		const wordsObj = {};
+		words.forEach(word => {
+			wordsObj[word] = true;
+		});
+		this.setState({ words: wordsObj });
+	};
+
+	filterText2 = (ignoreList, learnList, learnedList) => {
+		const words = { ...this.state.words };
+		Object.keys(ignoreList).forEach(word => {
+			delete words[word];
+		});
+		Object.keys(learnList).forEach(word => {
+			delete words[word];
+		});
+		Object.keys(learnedList).forEach(word => {
+			delete words[word];
+		});
 		this.setState({ words });
 	};
 
@@ -54,17 +70,25 @@ class VocabBuilder extends React.Component {
 		this.state.ignoreRef.update(ignoreList);
 		this.state.learnRef.update(learnList);
 		this.state.learnedRef.update(learnedList);
+		this.filterText2(ignoreList, learnList, learnedList);
 	};
 
 	render() {
 		return (
 			<div className="vocab-builder">
-				<h1>Vocab Builder</h1>
-				{this.state.words ? (
-					<WordsList words={this.state.words} updateWords={this.updateWords} />
-				) : (
-					<DropZone addFile={this.addFile} />
-				)}
+				{this.state.ignore || this.state.learn || this.state.learned ? (
+					<Fragment>
+						<h1>Vocab Builder</h1>
+						{this.state.words ? (
+							<WordsList
+								words={this.state.words}
+								updateWords={this.updateWords}
+							/>
+						) : (
+							<DropZone addFile={this.addFile} />
+						)}
+					</Fragment>
+				) : null}
 			</div>
 		);
 	}

@@ -26,15 +26,22 @@ const WordsList = props => {
 		});
 	};
 
+	const resetLists = () => {
+		addIgnore({});
+		addLearn({});
+		addLearned({});
+	};
+
 	const displayWords = words => {
+		words = Object.keys(words);
 		return words.map(word => (
 			<Word
 				key={word}
-				stored={ignoreList[word] || learnedList[word] || learnList[word]}
 				word={word}
 				addToLearn={addToLearn}
 				addToIgnore={addToIgnore}
 				addToLearned={addToLearned}
+				stored={ignoreList[word] || learnedList[word] || learnList[word]}
 			/>
 		));
 	};
@@ -44,7 +51,9 @@ const WordsList = props => {
 			<div className="words-list">{displayWords(props.words)}</div>
 			<div
 				className="update-btn"
-				onClick={() => props.updateWords(ignoreList, learnedList, learnList)}
+				onClick={() =>
+					props.updateWords(ignoreList, learnedList, learnList) || resetLists()
+				}
 			>
 				Update
 			</div>
