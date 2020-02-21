@@ -2,7 +2,7 @@ import React from "react";
 
 const Word = props => {
 	return (
-		<div className="word" style={{ opacity: `${props.stored ? 0.5 : 1}` }}>
+		<div className="word" style={{ opacity: `${props.stored ? 0.5 : 0.85}` }}>
 			<div className="text">{props.word}</div>
 			<div className={props.stored ? "btns" : "active btns"}>
 				<div

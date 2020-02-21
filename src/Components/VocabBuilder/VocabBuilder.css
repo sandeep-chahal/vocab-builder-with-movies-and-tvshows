@@ -95,3 +95,35 @@
 	transform: translateY(2px);
 	box-shadow: 0px -2px 10px #ccc;
 }
+
+@media screen and (max-width: 600px) {
+	html {
+		font-size: 40%;
+	}
+	h1 {
+		text-align: center;
+		margin-top: 2rem;
+	}
+	.dropzone {
+		margin: auto;
+		margin-top: 10rem;
+	}
+
+	.words-list {
+		height: 80vh;
+		width: 80vw;
+		margin: auto;
+		margin-top: 3rem;
+		flex-wrap: nowrap;
+		flex-direction: column;
+	}
+
+	.word {
+		width: 80%;
+		font-size: 3.5rem;
+	}
+	.btns > * {
+		width: 3.5rem;
+		height: 3.5rem;
+	}
+}

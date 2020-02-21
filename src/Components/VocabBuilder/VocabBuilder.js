@@ -8,16 +8,24 @@ import WordsList from "../WordsList/WordsList";
 class VocabBuilder extends React.Component {
 	state = {
 		words: null,
-		ignore: []
+		ignore: {},
+		learned: {},
+		learn: {},
+		ignoreRef: firebase.database().ref("ignore"),
+		learnRef: firebase.database().ref("learn"),
+		learnedRef: firebase.database().ref("learned")
 	};
 
 	componentDidMount() {
-		firebase
-			.database()
-			.ref("ignore")
-			.once("value", snap => {
-				this.setState({ ignore: snap.val() });
-			});
+		this.state.ignoreRef.on("value", snap => {
+			this.setState({ ignore: snap.val() });
+		});
+		this.state.learnRef.on("value", snap => {
+			this.setState({ learn: snap.val() });
+		});
+		this.state.learnedRef.on("value", snap => {
+			this.setState({ learned: snap.val() });
+		});
 	}
 
 	addFile = file => {
@@ -42,14 +50,18 @@ class VocabBuilder extends React.Component {
 		this.setState({ words });
 	};
 
-	updateWords = () => {};
+	updateWords = (ignoreList, learnedList, learnList) => {
+		this.state.ignoreRef.update(ignoreList);
+		this.state.learnRef.update(learnList);
+		this.state.learnedRef.update(learnedList);
+	};
 
 	render() {
 		return (
 			<div className="vocab-builder">
 				<h1>Vocab Builder</h1>
 				{this.state.words ? (
-					<WordsList words={this.state.words} />
+					<WordsList words={this.state.words} updateWords={this.updateWords} />
 				) : (
 					<DropZone addFile={this.addFile} />
 				)}
