@@ -35,3 +35,16 @@ code {
 .app {
 	padding: 1rem 2rem;
 }
+
+*::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 6px;
+	background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: #00000065;
+}

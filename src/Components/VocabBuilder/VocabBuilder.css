@@ -18,3 +18,58 @@
 
 	margin: 5rem 0 0 15rem;
 }
+
+.words-list {
+	padding: 2rem;
+	margin-top: 2rem;
+	background-color: var(--sky-blue);
+	padding: 2rem 0 0 4rem;
+	border-radius: 4rem;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+
+	height: 80vh;
+	width: 95vw;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.word {
+	background-color: var(--dark-navy-blue);
+	width: 30%;
+	margin: 2rem;
+	padding: 1rem;
+	color: var(--white);
+	border-radius: 0.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.btns {
+	display: flex;
+}
+.btns > * {
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	margin: 0.5rem;
+	cursor: pointer;
+	opacity: 0.8;
+	transition: all 0.2s ease-out;
+}
+.btns > *:hover {
+	opacity: 1;
+	transform: scale(1.25);
+}
+
+.learn-btn {
+	background-color: var(--light-green);
+}
+
+.learned-btn {
+	background-color: var(--yellow);
+}
+.ignore-btn {
+	background-color: var(--light-red);
+}
