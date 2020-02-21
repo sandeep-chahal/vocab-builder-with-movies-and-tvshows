@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import "./VocabBuilder.css";
+import Spinner from "../../Assets/Infinity-loader.svg";
 
 import firebase from "../../firebase";
 import DropZone from "../DropZone/DropZone";
@@ -88,7 +89,9 @@ class VocabBuilder extends Component {
 							<DropZone addFile={this.addFile} />
 						)}
 					</Fragment>
-				) : null}
+				) : (
+					<img className="spinner" src={Spinner} />
+				)}
 			</div>
 		);
 	}
