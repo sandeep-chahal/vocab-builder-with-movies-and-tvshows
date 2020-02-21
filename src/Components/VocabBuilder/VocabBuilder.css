@@ -1,0 +1,20 @@
+.vocab-builder {
+	font-size: 3rem;
+}
+
+.card {
+	width: 35rem;
+	height: 25rem;
+	border-radius: 2.5rem;
+}
+.dropzone {
+	cursor: pointer;
+	background-color: var(--dropzone);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2.5rem;
+	border: 0.5rem dotted #ccc;
+
+	margin: 5rem 0 0 15rem;
+}

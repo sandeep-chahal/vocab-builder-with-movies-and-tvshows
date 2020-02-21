@@ -1,8 +1,13 @@
 import React from "react";
-import "./App.css";
+
+import VocabBuilder from "./Components/VocabBuilder/VocabBuilder";
 
 function App() {
-	return <div>Starting....</div>;
+	return (
+		<div className="app">
+			<VocabBuilder />
+		</div>
+	);
 }
 
 export default App;
