@@ -6,15 +6,49 @@ const WordsList = props => {
 	const [learnedList, addLearned] = useState({});
 	const [learnList, addLearn] = useState({});
 
-	const addToIgnore = word => {};
-
-	const addToLearn = word => {};
-	const addToLearned = word => {};
-
-	const displayWords = words => {
-		return words.map(word => <Word word={word} />);
+	const addToIgnore = word => {
+		addIgnore({
+			...ignoreList,
+			[word]: true
+		});
 	};
 
-	return <div className="words-list">{displayWords(props.words)}</div>;
+	const addToLearn = word => {
+		addLearn({
+			...learnList,
+			[word]: true
+		});
+	};
+	const addToLearned = word => {
+		addLearned({
+			...learnedList,
+			[word]: true
+		});
+	};
+
+	const displayWords = words => {
+		return words.map(word => (
+			<Word
+				key={word}
+				stored={ignoreList[word] || learnedList[word] || learnList[word]}
+				word={word}
+				addToLearn={addToLearn}
+				addToIgnore={addToIgnore}
+				addToLearned={addToLearned}
+			/>
+		));
+	};
+
+	return (
+		<div className="words-list-wrapper">
+			<div className="words-list">{displayWords(props.words)}</div>
+			<div
+				className="update-btn"
+				onClick={() => props.updateWords(ignoreList, learnedList, learnList)}
+			>
+				Update
+			</div>
+		</div>
+	);
 };
 export default WordsList;

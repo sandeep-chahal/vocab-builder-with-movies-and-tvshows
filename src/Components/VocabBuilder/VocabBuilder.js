@@ -42,6 +42,8 @@ class VocabBuilder extends React.Component {
 		this.setState({ words });
 	};
 
+	updateWords = () => {};
+
 	render() {
 		return (
 			<div className="vocab-builder">
