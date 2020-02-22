@@ -22,10 +22,10 @@ class VocabBuilder extends Component {
 			this.setState({ ignore: snap.val() });
 		});
 		this.state.learnRef.on("value", snap => {
-			this.setState({ learn: snap.val() });
+			this.setState({ learn: snap.val() || {} });
 		});
 		this.state.learnedRef.on("value", snap => {
-			this.setState({ learned: snap.val() });
+			this.setState({ learned: snap.val() || {} });
 		});
 	}
 
@@ -44,7 +44,11 @@ class VocabBuilder extends Component {
 		words = words.map(word => word.replace(/\.|,|\"|!|\?/g, "").toLowerCase());
 		words = words.filter(
 			word =>
-				word.length > 2 && !this.state.ignore[word] && /^[a-zA-Z]+$/.test(word)
+				word.length > 2 &&
+				!this.state.ignore[word] &&
+				!this.state.learn[word] &&
+				!this.state.learned[word] &&
+				/^[a-zA-Z]+$/.test(word)
 		);
 		const wordsObj = {};
 		words.forEach(word => {
@@ -90,7 +94,7 @@ class VocabBuilder extends Component {
 						)}
 					</Fragment>
 				) : (
-					<img className="spinner" src={Spinner} />
+					<img className="spinner" alt="loading" src={Spinner} />
 				)}
 			</div>
 		);

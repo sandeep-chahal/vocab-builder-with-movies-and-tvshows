@@ -3,7 +3,15 @@ import React from "react";
 const Word = props => {
 	return (
 		<div className="word" style={{ opacity: `${props.stored ? 0.5 : 0.85}` }}>
-			<div className="text">{props.word}</div>
+			<div className="text">
+				<a
+					rel="noopener noreferrer"
+					target="_blank"
+					href={`https://dictionary.cambridge.org/dictionary/english/${props.word}`}
+				>
+					{props.word}
+				</a>
+			</div>
 			<div className={props.stored ? "btns" : "active btns"}>
 				<div
 					className="learn-btn"

@@ -9,7 +9,7 @@ function DropZone({ addFile }) {
 
 	return (
 		<div className="dropzone card" {...getRootProps()}>
-			<input {...getInputProps()} />
+			<input {...getInputProps()} accept=".srt" />
 			{isDragActive ? <p>i'll catch it...</p> : <p>Drop here..</p>}
 		</div>
 	);
