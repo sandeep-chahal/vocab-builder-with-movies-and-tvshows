@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 const Word = props => {
 	return (
@@ -13,18 +13,24 @@ const Word = props => {
 				</a>
 			</div>
 			<div className={props.stored ? "btns" : "active btns"}>
-				<div
-					className="learn-btn"
-					onClick={() => props.addToLearn(props.word)}
-				></div>
-				<div
-					className="learned-btn"
-					onClick={() => props.addToLearned(props.word)}
-				></div>
-				<div
-					className="ignore-btn"
-					onClick={() => props.addToIgnore(props.word)}
-				></div>
+				{
+					(props.type = "newWords" ? (
+						<Fragment>
+							<div
+								className="learn-btn"
+								onClick={() => props.addToLearn(props.word)}
+							></div>
+							<div
+								className="learned-btn"
+								onClick={() => props.addToLearned(props.word)}
+							></div>
+							<div
+								className="ignore-btn"
+								onClick={() => props.addToIgnore(props.word)}
+							></div>{" "}
+						</Fragment>
+					) : null)
+				}
 			</div>
 		</div>
 	);

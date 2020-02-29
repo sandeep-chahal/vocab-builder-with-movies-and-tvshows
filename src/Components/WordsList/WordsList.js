@@ -36,6 +36,7 @@ const WordsList = props => {
 		words = Object.keys(words);
 		return words.map(word => (
 			<Word
+				type={props.type}
 				key={word}
 				word={word}
 				addToLearn={addToLearn}
