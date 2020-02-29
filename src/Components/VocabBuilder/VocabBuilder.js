@@ -8,89 +8,90 @@ import WordsList from "../WordsList/WordsList";
 
 class VocabBuilder extends Component {
 	state = {
-		words: null,
-		ignore: null,
-		learned: null,
-		learn: null,
+		newWords: null,
+		ignoreList: null,
+		learnedList: null,
+		learningList: null,
+		currentSelected: null,
+		loading: true,
 		ignoreRef: firebase.database().ref("ignore"),
 		learnRef: firebase.database().ref("learn"),
 		learnedRef: firebase.database().ref("learned")
 	};
 
 	componentDidMount() {
+		this.addListners();
+	}
+
+	addListners() {
 		this.state.ignoreRef.on("value", snap => {
-			this.setState({ ignore: snap.val() });
-		});
-		this.state.learnRef.on("value", snap => {
-			this.setState({ learn: snap.val() || {} });
+			this.setState({ ignoreList: snap.val() });
 		});
 		this.state.learnedRef.on("value", snap => {
-			this.setState({ learned: snap.val() || {} });
+			this.setState({ learnedList: snap.val() || {} });
+		});
+		this.state.learnRef.on("value", snap => {
+			this.setState({ learningList: snap.val() || {}, loading: false });
 		});
 	}
 
-	addFile = file => {
+	addCrtFile = file => {
 		var reader = new FileReader();
 		reader.onload = () => {
 			var text = reader.result;
-			this.filterText(text);
+			this.filterWords(text);
 		};
 		if (file && (file.type === "" || file.type === "text/plain"))
 			reader.readAsText(file);
 	};
 
-	filterText = input => {
+	filterWords = input => {
 		let words = input.split(/[\s,]+/);
 		words = words.map(word => word.replace(/\.|,|\"|!|\?/g, "").toLowerCase());
 		words = words.filter(
 			word =>
 				word.length > 2 &&
-				!this.state.ignore[word] &&
-				!this.state.learn[word] &&
-				!this.state.learned[word] &&
+				!this.state.ignoreList[word] &&
+				!this.state.learningList[word] &&
+				!this.state.learnedList[word] &&
 				/^[a-zA-Z]+$/.test(word)
 		);
 		const wordsObj = {};
 		words.forEach(word => {
 			wordsObj[word] = true;
 		});
-		this.setState({ words: wordsObj });
+		this.setState({ newWords: wordsObj, currentSelected: "newWords" });
 	};
 
-	filterText2 = (ignoreList, learnList, learnedList) => {
-		const words = { ...this.state.words };
-		Object.keys(ignoreList).forEach(word => {
+	removeFromNewWords = list => {
+		const words = { ...this.state.newWords };
+		Object.keys(list).forEach(word => {
 			delete words[word];
 		});
-		Object.keys(learnList).forEach(word => {
-			delete words[word];
-		});
-		Object.keys(learnedList).forEach(word => {
-			delete words[word];
-		});
-		this.setState({ words });
+		this.setState({ newWords: words });
 	};
 
 	updateWords = (ignoreList, learnedList, learnList) => {
 		this.state.ignoreRef.update(ignoreList);
 		this.state.learnRef.update(learnList);
 		this.state.learnedRef.update(learnedList);
-		this.filterText2(ignoreList, learnList, learnedList);
+		this.removeFromNewWords({ ...ignoreList, ...learnList, ...learnedList });
 	};
 
 	render() {
 		return (
 			<div className="vocab-builder">
-				{this.state.ignore || this.state.learn || this.state.learned ? (
+				{!this.state.loading ? (
 					<Fragment>
 						<h1>Vocab Builder</h1>
-						{this.state.words ? (
+						{this.state.currentSelected ? (
 							<WordsList
-								words={this.state.words}
+								type={this.state.currentSelected}
+								words={this.state.newWords}
 								updateWords={this.updateWords}
 							/>
 						) : (
-							<DropZone addFile={this.addFile} />
+							<DropZone addFile={this.addCrtFile} />
 						)}
 					</Fragment>
 				) : (
