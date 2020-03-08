@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Word from "./Word";
 
 const WordsList = props => {
@@ -33,7 +33,7 @@ const WordsList = props => {
 	};
 
 	const displayWords = words => {
-		words = Object.keys(words || {});
+		words = Object.keys(props.words || {});
 		return words.map(word => (
 			<Word
 				type={props.type}
@@ -50,6 +50,9 @@ const WordsList = props => {
 
 	return (
 		<div className="words-list-wrapper">
+			<div className="word-counter">
+				Total Words: {Object.keys(props.words || {}).length}
+			</div>
 			<div className="words-list">{displayWords(props.words)}</div>
 			{props.type === "newWords" ? (
 				<div
