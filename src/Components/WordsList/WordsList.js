@@ -33,7 +33,7 @@ const WordsList = props => {
 	};
 
 	const displayWords = words => {
-		words = Object.keys(words);
+		words = Object.keys(words || {});
 		return words.map(word => (
 			<Word
 				type={props.type}
@@ -50,14 +50,17 @@ const WordsList = props => {
 	return (
 		<div className="words-list-wrapper">
 			<div className="words-list">{displayWords(props.words)}</div>
-			<div
-				className="update-btn"
-				onClick={() =>
-					props.updateWords(ignoreList, learnedList, learnList) || resetLists()
-				}
-			>
-				Update
-			</div>
+			{props.type === "newWords" ? (
+				<div
+					className="update-btn"
+					onClick={() =>
+						props.updateWords(ignoreList, learnedList, learnList) ||
+						resetLists()
+					}
+				>
+					Update
+				</div>
+			) : null}
 		</div>
 	);
 };

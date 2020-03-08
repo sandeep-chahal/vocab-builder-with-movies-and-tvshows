@@ -1,8 +1,9 @@
 import React from "react";
+import WordsList from "./WordsList/WordsList";
 
 class LearningWords extends React.Component {
 	render() {
-		return <div>learing</div>;
+		return <WordsList type="learingWords" words={this.props.words} />;
 	}
 }
 

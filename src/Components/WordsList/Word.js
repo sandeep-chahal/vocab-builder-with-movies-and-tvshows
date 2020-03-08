@@ -13,24 +13,22 @@ const Word = props => {
 				</a>
 			</div>
 			<div className={props.stored ? "btns" : "active btns"}>
-				{
-					(props.type = "newWords" ? (
-						<Fragment>
-							<div
-								className="learn-btn"
-								onClick={() => props.addToLearn(props.word)}
-							></div>
-							<div
-								className="learned-btn"
-								onClick={() => props.addToLearned(props.word)}
-							></div>
-							<div
-								className="ignore-btn"
-								onClick={() => props.addToIgnore(props.word)}
-							></div>{" "}
-						</Fragment>
-					) : null)
-				}
+				{props.type === "newWords" ? (
+					<Fragment>
+						<div
+							className="learn-btn"
+							onClick={() => props.addToLearn(props.word)}
+						></div>
+						<div
+							className="learned-btn"
+							onClick={() => props.addToLearned(props.word)}
+						></div>
+						<div
+							className="ignore-btn"
+							onClick={() => props.addToIgnore(props.word)}
+						></div>{" "}
+					</Fragment>
+				) : null}
 			</div>
 		</div>
 	);

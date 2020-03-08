@@ -5,6 +5,7 @@ import Spinner from "../../Assets/Infinity-loader.svg";
 import firebase from "../../firebase";
 import DropZone from "../DropZone/DropZone";
 import WordsList from "../WordsList/WordsList";
+import LearningWords from "../LearningWords";
 
 class VocabBuilder extends Component {
 	state = {
@@ -79,22 +80,35 @@ class VocabBuilder extends Component {
 	};
 
 	render() {
+		let renderingComponent = null;
+		if (this.state.currentSelected === "newWords")
+			renderingComponent = (
+				<WordsList
+					type={this.state.currentSelected}
+					words={this.state.newWords}
+					updateWords={this.updateWords}
+				/>
+			);
+		else if (this.state.currentSelected === "learningWords")
+			renderingComponent = <LearningWords words={this.state.learningList} />;
+
 		return (
 			<div className="vocab-builder">
 				{!this.state.loading ? (
 					<Fragment>
 						<h1>Vocab Builder</h1>
 						<main>
-							{this.state.currentSelected ? (
-								<WordsList
-									type={this.state.currentSelected}
-									words={this.state.newWords}
-									updateWords={this.updateWords}
-								/>
+							{renderingComponent ? (
+								renderingComponent
 							) : (
 								<Fragment>
 									<DropZone addFile={this.addCrtFile} />
-									<div className="card learning-word-option">
+									<div
+										className="card learning-word-option"
+										onClick={() =>
+											this.setState({ currentSelected: "learningWords" })
+										}
+									>
 										Learning Words
 									</div>
 								</Fragment>
