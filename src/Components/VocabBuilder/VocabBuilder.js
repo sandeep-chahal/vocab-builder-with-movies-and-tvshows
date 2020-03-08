@@ -84,15 +84,22 @@ class VocabBuilder extends Component {
 				{!this.state.loading ? (
 					<Fragment>
 						<h1>Vocab Builder</h1>
-						{this.state.currentSelected ? (
-							<WordsList
-								type={this.state.currentSelected}
-								words={this.state.newWords}
-								updateWords={this.updateWords}
-							/>
-						) : (
-							<DropZone addFile={this.addCrtFile} />
-						)}
+						<main>
+							{this.state.currentSelected ? (
+								<WordsList
+									type={this.state.currentSelected}
+									words={this.state.newWords}
+									updateWords={this.updateWords}
+								/>
+							) : (
+								<Fragment>
+									<DropZone addFile={this.addCrtFile} />
+									<div className="card learning-word-option">
+										Learning Words
+									</div>
+								</Fragment>
+							)}
+						</main>
 					</Fragment>
 				) : (
 					<img className="spinner" alt="loading" src={Spinner} />

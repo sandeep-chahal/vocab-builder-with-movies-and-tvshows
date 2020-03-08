@@ -1,24 +1,31 @@
 .vocab-builder {
 	font-size: 3rem;
 }
+main {
+	display: flex;
+	justify-content: space-evenly;
+	padding: 5rem;
+}
 
 .card {
 	width: 35rem;
 	height: 25rem;
 	border-radius: 2.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
 }
 .dropzone {
-	cursor: pointer;
 	background-color: var(--dropzone);
 	display: flex;
-	justify-content: center;
-	align-items: center;
 	font-size: 2.5rem;
 	border: 0.5rem dotted #ccc;
-
-	margin: 5rem 0 0 15rem;
+	/* margin: 5rem 0 0 15rem; */
 }
-
+.learning-word-option {
+	background-color: var(--yellow);
+}
 .words-list {
 	padding: 2rem;
 	margin-top: 2rem;
