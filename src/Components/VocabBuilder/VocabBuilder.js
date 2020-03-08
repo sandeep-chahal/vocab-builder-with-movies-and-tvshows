@@ -79,6 +79,11 @@ class VocabBuilder extends Component {
 		this.removeFromNewWords({ ...ignoreList, ...learnList, ...learnedList });
 	};
 
+	removeFromLearning = word => {
+		this.state.learnRef.child(word).remove();
+		this.state.learnedRef.child(word).set(true);
+	};
+
 	render() {
 		let renderingComponent = null;
 		if (this.state.currentSelected === "newWords")
@@ -90,7 +95,12 @@ class VocabBuilder extends Component {
 				/>
 			);
 		else if (this.state.currentSelected === "learningWords")
-			renderingComponent = <LearningWords words={this.state.learningList} />;
+			renderingComponent = (
+				<LearningWords
+					words={this.state.learningList}
+					removeFromLearning={this.removeFromLearning}
+				/>
+			);
 
 		return (
 			<div className="vocab-builder">

@@ -12,7 +12,10 @@ const Word = props => {
 		const learned_btn = (
 			<div
 				className="learned-btn"
-				onClick={() => props.addToLearned(props.word)}
+				onClick={() => {
+					if (type === "learingWords") props.removeFromLearning(props.word);
+					else props.addToLearned(props.word);
+				}}
 			></div>
 		);
 

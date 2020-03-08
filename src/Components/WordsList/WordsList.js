@@ -43,6 +43,7 @@ const WordsList = props => {
 				addToIgnore={addToIgnore}
 				addToLearned={addToLearned}
 				stored={ignoreList[word] || learnedList[word] || learnList[word]}
+				removeFromLearning={props.removeFromLearning}
 			/>
 		));
 	};
