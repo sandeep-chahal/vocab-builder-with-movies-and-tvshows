@@ -106,7 +106,9 @@ class VocabBuilder extends Component {
 			<div className="vocab-builder">
 				{!this.state.loading ? (
 					<Fragment>
-						<h1>Vocab Builder</h1>
+						<h1 onClick={() => this.setState({ currentSelected: null })}>
+							Vocab Builder
+						</h1>
 						<main>
 							{renderingComponent ? (
 								renderingComponent

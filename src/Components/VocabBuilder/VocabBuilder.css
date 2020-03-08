@@ -1,6 +1,31 @@
 .vocab-builder {
 	font-size: 3rem;
 }
+h1 {
+	display: inline-block;
+	cursor: pointer;
+	transition: all 0.2s ease-out;
+}
+h1:hover {
+	letter-spacing: 2px;
+	animation: multiColor 2s infinite linear;
+}
+
+@keyframes multiColor {
+	20% {
+		color: var(--sky-blue);
+	}
+	40% {
+		color: var(--yellow);
+	}
+	60% {
+		color: var(--light-green);
+	}
+	80% {
+		color: var(--light-red);
+	}
+}
+
 main {
 	display: flex;
 	justify-content: space-evenly;
