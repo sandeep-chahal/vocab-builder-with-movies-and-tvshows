@@ -42,7 +42,7 @@ class VocabBuilder extends Component {
 		Object.keys(list).forEach(word => {
 			delete words[word];
 		});
-		this.SVGElementInstanceList({ newWords: words });
+		this.setState({ newWords: words });
 	};
 
 	updateWords = (ignoreList, learnedList, learnList) => {
