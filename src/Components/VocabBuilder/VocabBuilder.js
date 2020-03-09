@@ -48,7 +48,7 @@ class VocabBuilder extends Component {
 
 	filterWords = input => {
 		let words = input.split(/[\s,]+/);
-		words = words.map(word => word.replace(/\.|,|\"|!|\?/g, "").toLowerCase());
+		words = words.map(word => word.replace(/\.|,|"|!|\?/g, "").toLowerCase());
 		words = words.filter(
 			word =>
 				word.length > 2 &&
