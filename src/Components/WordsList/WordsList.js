@@ -54,7 +54,7 @@ const WordsList = props => {
 				Total Words: {Object.keys(props.words || {}).length}
 			</div>
 			<div className="words-list">{displayWords(props.words)}</div>
-			{props.type === "newWords" ? (
+			{props.type === "new_words" ? (
 				<div
 					className="update-btn"
 					onClick={() =>

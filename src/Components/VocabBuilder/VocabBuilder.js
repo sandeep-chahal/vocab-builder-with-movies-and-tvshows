@@ -4,8 +4,8 @@ import Spinner from "../../Assets/Infinity-loader.svg";
 
 import firebase from "../../firebase";
 import DropZone from "../DropZone/DropZone";
-import WordsList from "../WordsList/WordsList";
 import LearningWords from "../LearningWords";
+import NewWords from "../NewWords";
 
 class VocabBuilder extends Component {
 	state = {
@@ -61,7 +61,7 @@ class VocabBuilder extends Component {
 		words.forEach(word => {
 			wordsObj[word] = true;
 		});
-		this.setState({ newWords: wordsObj, currentSelected: "newWords" });
+		this.setState({ newWords: wordsObj, currentSelected: "new_words" });
 	};
 
 	removeFromNewWords = list => {
@@ -86,15 +86,11 @@ class VocabBuilder extends Component {
 
 	render() {
 		let renderingComponent = null;
-		if (this.state.currentSelected === "newWords")
+		if (this.state.currentSelected === "new_words")
 			renderingComponent = (
-				<WordsList
-					type={this.state.currentSelected}
-					words={this.state.newWords}
-					updateWords={this.updateWords}
-				/>
+				<NewWords words={this.state.newWords} updateWords={this.updateWords} />
 			);
-		else if (this.state.currentSelected === "learningWords")
+		else if (this.state.currentSelected === "learning_words")
 			renderingComponent = (
 				<LearningWords
 					words={this.state.learningList}
@@ -118,7 +114,7 @@ class VocabBuilder extends Component {
 									<div
 										className="card learning-word-option"
 										onClick={() =>
-											this.setState({ currentSelected: "learningWords" })
+											this.setState({ currentSelected: "learning_words" })
 										}
 									>
 										Learning Words

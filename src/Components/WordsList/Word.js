@@ -13,7 +13,7 @@ const Word = props => {
 			<div
 				className="learned-btn"
 				onClick={() => {
-					if (type === "learingWords") props.removeFromLearning(props.word);
+					if (type === "learing_words") props.removeFromLearning(props.word);
 					else props.addToLearned(props.word);
 				}}
 			></div>
@@ -28,9 +28,9 @@ const Word = props => {
 
 		return (
 			<Fragment>
-				{type === "newWords" ? learn_btn : null}
-				{type === "newWords" || type === "learingWords" ? learned_btn : null}
-				{type === "newWords" ? ignore_btn : null}
+				{type === "new_words" ? learn_btn : null}
+				{type === "new_words" || type === "learing_words" ? learned_btn : null}
+				{type === "new_words" ? ignore_btn : null}
 			</Fragment>
 		);
 	};
