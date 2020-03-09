@@ -6,11 +6,11 @@ import firebase from "../../firebase";
 import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
 import NewWords from "../NewWords";
+import getWordList from "../../crtToWords";
 import { updateWordList } from "../../firebase.utility";
 
 class VocabBuilder extends Component {
 	state = {
-		newWords: null,
 		ignoreList: null,
 		learnedList: null,
 		learningList: null,
@@ -37,45 +37,31 @@ class VocabBuilder extends Component {
 		});
 	}
 
-	addCrtFile = file => {
-		var reader = new FileReader();
-		reader.onload = () => {
-			var text = reader.result;
-			this.filterWords(text);
-		};
-		if (file && (file.type === "" || file.type === "text/plain"))
-			reader.readAsText(file);
-	};
-
-	filterWords = input => {
-		let words = input.split(/[\s,]+/);
-		words = words.map(word => word.replace(/\.|,|"|!|\?/g, "").toLowerCase());
-		words = words.filter(
-			word =>
-				word.length > 2 &&
-				!this.state.ignoreList[word] &&
-				!this.state.learningList[word] &&
-				!this.state.learnedList[word] &&
-				/^[a-zA-Z]+$/.test(word)
-		);
-		const wordsObj = {};
-		words.forEach(word => {
-			wordsObj[word] = true;
-		});
-		this.setState({ newWords: wordsObj, currentSelected: "new_words" });
-	};
-
 	removeFromNewWords = list => {
 		const words = { ...this.state.newWords };
 		Object.keys(list).forEach(word => {
 			delete words[word];
 		});
-		this.setState({ newWords: words });
+		this.SVGElementInstanceList({ newWords: words });
 	};
 
 	updateWords = (ignoreList, learnedList, learnList) => {
 		updateWordList(ignoreList, learnedList, learnList);
 		this.removeFromNewWords({ ...ignoreList, ...learnList, ...learnedList });
+	};
+
+	handleCrtFile = file => {
+		getWordList(
+			file,
+			this.state.ignoreList,
+			this.state.learnedList,
+			this.state.learningList,
+			this.setNewWords
+		);
+	};
+
+	setNewWords = newWords => {
+		this.setState({ newWords, currentSelected: "new_words" });
 	};
 
 	render() {
@@ -99,7 +85,7 @@ class VocabBuilder extends Component {
 								renderingComponent
 							) : (
 								<Fragment>
-									<DropZone addFile={this.addCrtFile} />
+									<DropZone addFile={this.handleCrtFile} />
 									<div
 										className="card learning-word-option"
 										onClick={() =>

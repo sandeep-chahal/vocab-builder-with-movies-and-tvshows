@@ -2,6 +2,8 @@ import React from "react";
 import WordsList from "./WordsList/WordsList";
 
 class NewWords extends React.Component {
+	state = {};
+
 	updateWords = words => {};
 	render() {
 		return (
