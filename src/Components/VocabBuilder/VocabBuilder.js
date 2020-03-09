@@ -25,6 +25,7 @@ class VocabBuilder extends Component {
 		this.addListners();
 	}
 
+	//set listners to db word lists
 	addListners() {
 		this.state.ignoreRef.on("value", snap => {
 			this.setState({ ignoreList: snap.val() });
@@ -37,6 +38,7 @@ class VocabBuilder extends Component {
 		});
 	}
 
+	//remove words from newWords list
 	removeFromNewWords = list => {
 		const words = { ...this.state.newWords };
 		Object.keys(list).forEach(word => {
@@ -45,11 +47,15 @@ class VocabBuilder extends Component {
 		this.setState({ newWords: words });
 	};
 
+	//to update db and state after adding words to learned, learing and ignore list from newWords list
 	updateWords = (ignoreList, learnedList, learnList) => {
+		//update in db
 		updateWordList(ignoreList, learnedList, learnList);
+		//remove from state
 		this.removeFromNewWords({ ...ignoreList, ...learnList, ...learnedList });
 	};
 
+	//extract words from crt file
 	handleCrtFile = file => {
 		getWordList(
 			file,
@@ -60,11 +66,20 @@ class VocabBuilder extends Component {
 		);
 	};
 
+	//add newWords list to state after extracting from crt file
 	setNewWords = newWords => {
 		this.setState({ newWords, currentSelected: "new_words" });
 	};
 
+	//reset state when clicked on header to come back on home page
+	resetState = () => this.setState({ currentSelected: null, newWords: null });
+
 	render() {
+		// if loading then show spinner
+		if (this.state.loading)
+			return <img className="spinner" alt="loading" src={Spinner} />;
+
+		// choosing what should rendered
 		let renderingComponent = null;
 		if (this.state.currentSelected === "new_words")
 			renderingComponent = (
@@ -75,32 +90,24 @@ class VocabBuilder extends Component {
 
 		return (
 			<div className="vocab-builder">
-				{!this.state.loading ? (
-					<Fragment>
-						<h1 onClick={() => this.setState({ currentSelected: null })}>
-							Vocab Builder
-						</h1>
-						<main>
-							{renderingComponent ? (
-								renderingComponent
-							) : (
-								<Fragment>
-									<DropZone addFile={this.handleCrtFile} />
-									<div
-										className="card learning-word-option"
-										onClick={() =>
-											this.setState({ currentSelected: "learning_words" })
-										}
-									>
-										Learning Words
-									</div>
-								</Fragment>
-							)}
-						</main>
-					</Fragment>
-				) : (
-					<img className="spinner" alt="loading" src={Spinner} />
-				)}
+				<h1 onClick={this.resetState}>Vocab Builder</h1>
+				<main>
+					{renderingComponent ? (
+						renderingComponent
+					) : (
+						<Fragment>
+							<DropZone addFile={this.handleCrtFile} />
+							<div
+								className="card learning-word-option"
+								onClick={() =>
+									this.setState({ currentSelected: "learning_words" })
+								}
+							>
+								Learning Words
+							</div>
+						</Fragment>
+					)}
+				</main>
 			</div>
 		);
 	}
