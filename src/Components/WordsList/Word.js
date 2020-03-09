@@ -13,7 +13,8 @@ const Word = props => {
 			<div
 				className="learned-btn"
 				onClick={() => {
-					if (type === "learing_words") props.removeFromLearning(props.word);
+					if (type === "learing_words")
+						props.moveToLearnedFromLearning(props.word);
 					else props.addToLearned(props.word);
 				}}
 			></div>

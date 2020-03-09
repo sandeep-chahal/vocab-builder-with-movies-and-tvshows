@@ -6,6 +6,7 @@ import firebase from "../../firebase";
 import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
 import NewWords from "../NewWords";
+import { updateWordList } from "../../firebase.utility";
 
 class VocabBuilder extends Component {
 	state = {
@@ -73,15 +74,8 @@ class VocabBuilder extends Component {
 	};
 
 	updateWords = (ignoreList, learnedList, learnList) => {
-		this.state.ignoreRef.update(ignoreList);
-		this.state.learnRef.update(learnList);
-		this.state.learnedRef.update(learnedList);
+		updateWordList(ignoreList, learnedList, learnList);
 		this.removeFromNewWords({ ...ignoreList, ...learnList, ...learnedList });
-	};
-
-	removeFromLearning = word => {
-		this.state.learnRef.child(word).remove();
-		this.state.learnedRef.child(word).set(true);
 	};
 
 	render() {
@@ -91,12 +85,7 @@ class VocabBuilder extends Component {
 				<NewWords words={this.state.newWords} updateWords={this.updateWords} />
 			);
 		else if (this.state.currentSelected === "learning_words")
-			renderingComponent = (
-				<LearningWords
-					words={this.state.learningList}
-					removeFromLearning={this.removeFromLearning}
-				/>
-			);
+			renderingComponent = <LearningWords words={this.state.learningList} />;
 
 		return (
 			<div className="vocab-builder">

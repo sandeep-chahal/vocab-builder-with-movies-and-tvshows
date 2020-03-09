@@ -1,5 +1,6 @@
 import React from "react";
 import WordsList from "./WordsList/WordsList";
+import { moveToLearnedFromLearning } from "../firebase.utility";
 
 class LearningWords extends React.Component {
 	updateWords = words => {};
@@ -9,7 +10,7 @@ class LearningWords extends React.Component {
 				type="learing_words"
 				words={this.props.words}
 				updateWords={this.updateWords}
-				removeFromLearning={this.props.removeFromLearning}
+				moveToLearnedFromLearning={moveToLearnedFromLearning}
 			/>
 		);
 	}
