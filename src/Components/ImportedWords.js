@@ -1,10 +1,14 @@
 import React from "react";
 import WordsList from "./WordsList/WordsList";
 
-class NewWords extends React.Component {
-	state = {};
+class ImportedWords extends React.Component {
+	state = {
+		type: null,
+		name: null,
+		season: null,
+		episode: null
+	};
 
-	updateWords = words => {};
 	render() {
 		return (
 			<WordsList
@@ -16,4 +20,4 @@ class NewWords extends React.Component {
 	}
 }
 
-export default NewWords;
+export default ImportedWords;

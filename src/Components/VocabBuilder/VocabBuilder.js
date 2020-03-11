@@ -5,7 +5,7 @@ import Spinner from "../../Assets/Infinity-loader.svg";
 import firebase from "../../firebase";
 import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
-import NewWords from "../NewWords";
+import ImportedWords from "../ImportedWords";
 import getWordList from "../../crtToWords";
 import { updateWordList } from "../../firebase.utility";
 
@@ -83,7 +83,10 @@ class VocabBuilder extends Component {
 		let renderingComponent = null;
 		if (this.state.currentSelected === "new_words")
 			renderingComponent = (
-				<NewWords words={this.state.newWords} updateWords={this.updateWords} />
+				<ImportedWords
+					words={this.state.newWords}
+					updateWords={this.updateWords}
+				/>
 			);
 		else if (this.state.currentSelected === "learning_words")
 			renderingComponent = <LearningWords words={this.state.learningList} />;
