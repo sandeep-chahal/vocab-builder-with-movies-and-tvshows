@@ -117,7 +117,11 @@ class VocabBuilder extends Component {
 						</Fragment>
 					)}
 					{this.state.aboutImported.name === null && renderingComponent ? (
-						<AboutImported />
+						<AboutImported
+							close={() =>
+								this.setState({ currentSelected: null, newWords: null })
+							}
+						/>
 					) : null}
 				</main>
 			</div>

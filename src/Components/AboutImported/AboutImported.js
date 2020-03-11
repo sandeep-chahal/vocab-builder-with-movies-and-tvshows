@@ -49,9 +49,16 @@ class AboutImported extends React.Component {
 			[event.target.name]: event.target.value
 		});
 	};
+
+	handleSubmit = () => {};
+
+	handleClose = e => {
+		if (e.target.classList[0] === "popup-bg") this.props.close();
+	};
+
 	render() {
 		return (
-			<div className="popup-bg">
+			<div className="popup-bg" onClick={this.handleClose}>
 				<div className="popup">
 					<select onChange={this.handleChange} name="type">
 						<option value="random">Random</option>
@@ -60,6 +67,9 @@ class AboutImported extends React.Component {
 						<option value="yt-video">YT Video</option>
 					</select>
 					{this.displayInputs(this.state.type)}
+					<div className="submit-btn" onChange={this.handleSubmit}>
+						Done
+					</div>
 				</div>
 			</div>
 		);
