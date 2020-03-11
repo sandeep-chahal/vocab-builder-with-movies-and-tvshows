@@ -8,6 +8,7 @@ import LearningWords from "../LearningWords";
 import ImportedWords from "../ImportedWords";
 import getWordList from "../../crtToWords";
 import { updateWordList } from "../../firebase.utility";
+import AboutImported from "../AboutImported/AboutImported";
 
 class VocabBuilder extends Component {
 	state = {
@@ -18,7 +19,12 @@ class VocabBuilder extends Component {
 		loading: true,
 		ignoreRef: firebase.database().ref("ignore"),
 		learnRef: firebase.database().ref("learn"),
-		learnedRef: firebase.database().ref("learned")
+		learnedRef: firebase.database().ref("learned"),
+
+		aboutImported: {
+			type: null,
+			name: null
+		}
 	};
 
 	componentDidMount() {
@@ -95,7 +101,7 @@ class VocabBuilder extends Component {
 			<div className="vocab-builder">
 				<h1 onClick={this.resetState}>Vocab Builder</h1>
 				<main>
-					{renderingComponent ? (
+					{renderingComponent && this.state.aboutImported.name !== null ? (
 						renderingComponent
 					) : (
 						<Fragment>
@@ -110,6 +116,9 @@ class VocabBuilder extends Component {
 							</div>
 						</Fragment>
 					)}
+					{this.state.aboutImported.name === null && renderingComponent ? (
+						<AboutImported />
+					) : null}
 				</main>
 			</div>
 		);
