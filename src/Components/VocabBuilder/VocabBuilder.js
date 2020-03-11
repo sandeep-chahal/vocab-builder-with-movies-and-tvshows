@@ -22,8 +22,7 @@ class VocabBuilder extends Component {
 		learnedRef: firebase.database().ref("learned"),
 
 		aboutImported: {
-			type: null,
-			name: null
+			type: null
 		}
 	};
 
@@ -78,7 +77,12 @@ class VocabBuilder extends Component {
 	};
 
 	//reset state when clicked on header to come back on home page
-	resetState = () => this.setState({ currentSelected: null, newWords: null });
+	resetState = () =>
+		this.setState({
+			currentSelected: null,
+			newWords: null,
+			aboutImported: { type: null }
+		});
 
 	render() {
 		// if loading then show spinner
@@ -101,7 +105,7 @@ class VocabBuilder extends Component {
 			<div className="vocab-builder">
 				<h1 onClick={this.resetState}>Vocab Builder</h1>
 				<main>
-					{renderingComponent && this.state.aboutImported.name !== null ? (
+					{renderingComponent && this.state.aboutImported.type !== null ? (
 						renderingComponent
 					) : (
 						<Fragment>
@@ -116,11 +120,12 @@ class VocabBuilder extends Component {
 							</div>
 						</Fragment>
 					)}
-					{this.state.aboutImported.name === null && renderingComponent ? (
+					{this.state.aboutImported.type === null && renderingComponent ? (
 						<AboutImported
 							close={() =>
 								this.setState({ currentSelected: null, newWords: null })
 							}
+							setAbout={obj => this.setState({ aboutImported: obj })}
 						/>
 					) : null}
 				</main>

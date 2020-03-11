@@ -3,7 +3,11 @@ import "./AboutImported.css";
 
 class AboutImported extends React.Component {
 	state = {
-		type: "random"
+		type: "random",
+		name: "",
+		season: 0,
+		episode: 0,
+		link: 0
 	};
 
 	displayInputs = type => {
@@ -15,6 +19,7 @@ class AboutImported extends React.Component {
 					onChange={this.handleChange}
 					name="name"
 					placeholder="Name"
+					value={this.state.name}
 				/>
 				{type === "yt-video" ? (
 					<input
@@ -23,6 +28,7 @@ class AboutImported extends React.Component {
 						onChange={this.handleChange}
 						name="link"
 						placeholder="Link"
+						value={this.state.link}
 					/>
 				) : null}
 				{type === "tv-show" ? (
@@ -32,12 +38,14 @@ class AboutImported extends React.Component {
 							onChange={this.handleChange}
 							name="season"
 							placeholder="Season"
+							value={this.state.season}
 						/>
 						<input
 							type="number"
 							onChange={this.handleChange}
 							name="episode"
 							placeholder="Episode"
+							value={this.state.episode}
 						/>
 					</Fragment>
 				) : null}
@@ -50,7 +58,29 @@ class AboutImported extends React.Component {
 		});
 	};
 
-	handleSubmit = () => {};
+	handleSubmit = () => {
+		const type = this.state.type;
+		const aboutObj = {};
+		if (type === "random" || type === "movie") {
+			if (this.state.name) {
+				aboutObj["name"] = this.state.name;
+			} else return;
+		}
+		if (type === "tv-show") {
+			if (this.state.name && this.state.season && this.state.episode) {
+				aboutObj["name"] = this.state.name;
+				aboutObj["season"] = this.state.season;
+				aboutObj["episode"] = this.state.episode;
+			} else return;
+		}
+		if (type === "yt-video") {
+			if (this.state.name && this.state.link) {
+				aboutObj["name"] = this.state.name;
+				aboutObj["link"] = this.state.link;
+			} else return;
+		}
+		this.props.setAbout(aboutObj);
+	};
 
 	handleClose = e => {
 		if (e.target.classList[0] === "popup-bg") this.props.close();
@@ -67,7 +97,7 @@ class AboutImported extends React.Component {
 						<option value="yt-video">YT Video</option>
 					</select>
 					{this.displayInputs(this.state.type)}
-					<div className="submit-btn" onChange={this.handleSubmit}>
+					<div className="submit-btn" onClick={this.handleSubmit}>
 						Done
 					</div>
 				</div>
