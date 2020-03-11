@@ -2,13 +2,6 @@ import React from "react";
 import WordsList from "./WordsList/WordsList";
 
 class ImportedWords extends React.Component {
-	state = {
-		type: null,
-		name: null,
-		season: null,
-		episode: null
-	};
-
 	render() {
 		return (
 			<WordsList

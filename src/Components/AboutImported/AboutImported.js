@@ -79,6 +79,7 @@ class AboutImported extends React.Component {
 				aboutObj["link"] = this.state.link;
 			} else return;
 		}
+		aboutObj["type"] = type;
 		this.props.setAbout(aboutObj);
 	};
 

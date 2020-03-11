@@ -7,11 +7,12 @@ import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
 import ImportedWords from "../ImportedWords";
 import getWordList from "../../crtToWords";
-import { updateWordList } from "../../firebase.utility";
+import { updateWordList, uploadSrtFileToServer } from "../../firebase.utility";
 import AboutImported from "../AboutImported/AboutImported";
 
 class VocabBuilder extends Component {
 	state = {
+		crtFile: null,
 		ignoreList: null,
 		learnedList: null,
 		learningList: null,
@@ -62,6 +63,7 @@ class VocabBuilder extends Component {
 
 	//extract words from crt file
 	handleCrtFile = file => {
+		this.setState({ crtFile: file });
 		getWordList(
 			file,
 			this.state.ignoreList,
@@ -84,6 +86,11 @@ class VocabBuilder extends Component {
 			aboutImported: { type: null }
 		});
 
+	handleSetAboutImported = about => {
+		uploadSrtFileToServer(this.state.crtFile, about);
+		this.setState({ aboutImported: about });
+	};
+
 	render() {
 		// if loading then show spinner
 		if (this.state.loading)
@@ -105,7 +112,9 @@ class VocabBuilder extends Component {
 			<div className="vocab-builder">
 				<h1 onClick={this.resetState}>Vocab Builder</h1>
 				<main>
-					{renderingComponent && this.state.aboutImported.type !== null ? (
+					{renderingComponent &&
+					(this.state.aboutImported.type !== null ||
+						this.state.currentSelected !== "new_words") ? (
 						renderingComponent
 					) : (
 						<Fragment>
@@ -120,12 +129,13 @@ class VocabBuilder extends Component {
 							</div>
 						</Fragment>
 					)}
-					{this.state.aboutImported.type === null && renderingComponent ? (
+					{this.state.aboutImported.type === null &&
+					this.state.currentSelected === "new_words" ? (
 						<AboutImported
 							close={() =>
 								this.setState({ currentSelected: null, newWords: null })
 							}
-							setAbout={obj => this.setState({ aboutImported: obj })}
+							setAbout={this.handleSetAboutImported}
 						/>
 					) : null}
 				</main>
