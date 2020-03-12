@@ -25,7 +25,7 @@ const saveUploadedFileInDatabase = (path, aboutObj) => {
 };
 
 export const uploadSrtFileToServer = (file, aboutObj) => {
-	let path = aboutObj.name.toLowerCase();
+	let path = aboutObj.type + "/" + aboutObj.name.toLowerCase();
 	path +=
 		aboutObj.type === "tv-show"
 			? `/S${aboutObj.season}/E${aboutObj.episode}`
@@ -49,7 +49,7 @@ export const uploadSrtFileToServer = (file, aboutObj) => {
 					() => {
 						console.log("uploaded");
 						task.snapshot.ref.getDownloadURL().then(url => {
-							saveUploadedFileInDatabase({ ...aboutObj, url });
+							saveUploadedFileInDatabase(path, { ...aboutObj, url });
 						});
 					}
 				);

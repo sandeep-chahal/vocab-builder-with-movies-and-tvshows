@@ -21,6 +21,8 @@ class VocabBuilder extends Component {
 		ignoreRef: firebase.database().ref("ignore"),
 		learnRef: firebase.database().ref("learn"),
 		learnedRef: firebase.database().ref("learned"),
+		uploadsRef: firebase.database().ref("uploads"),
+		uploaded: null,
 
 		aboutImported: {
 			type: null
@@ -40,7 +42,10 @@ class VocabBuilder extends Component {
 			this.setState({ learnedList: snap.val() || {} });
 		});
 		this.state.learnRef.on("value", snap => {
-			this.setState({ learningList: snap.val() || {}, loading: false });
+			this.setState({ learningList: snap.val() || {} });
+		});
+		this.state.uploadsRef.once("value", snap => {
+			this.setState({ uploaded: snap.val() || {}, loading: false });
 		});
 	}
 
