@@ -7,12 +7,15 @@ import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
 import ImportedWords from "../ImportedWords";
 import getWordList from "../../crtToWords";
-import { updateWordList, uploadSrtFileToServer } from "../../firebase.utility";
+import {
+	updateWordList,
+	uploadImportedWordsToDB
+} from "../../firebase.utility";
 import AboutImported from "../AboutImported/AboutImported";
+import UploadedItems from "../UploadedItems/UploadedItems";
 
 class VocabBuilder extends Component {
 	state = {
-		crtFile: null,
 		ignoreList: null,
 		learnedList: null,
 		learningList: null,
@@ -22,11 +25,7 @@ class VocabBuilder extends Component {
 		learnRef: firebase.database().ref("learn"),
 		learnedRef: firebase.database().ref("learned"),
 		uploadsRef: firebase.database().ref("uploads"),
-		uploaded: null,
-
-		aboutImported: {
-			type: null
-		}
+		uploadedItems: null
 	};
 
 	componentDidMount() {
@@ -45,7 +44,7 @@ class VocabBuilder extends Component {
 			this.setState({ learningList: snap.val() || {} });
 		});
 		this.state.uploadsRef.once("value", snap => {
-			this.setState({ uploaded: snap.val() || {}, loading: false });
+			this.setState({ uploadedItems: snap.val() || {}, loading: false });
 		});
 	}
 
@@ -68,7 +67,6 @@ class VocabBuilder extends Component {
 
 	//extract words from crt file
 	handleCrtFile = file => {
-		this.setState({ crtFile: file });
 		getWordList(
 			file,
 			this.state.ignoreList,
@@ -80,20 +78,20 @@ class VocabBuilder extends Component {
 
 	//add newWords list to state after extracting from crt file
 	setNewWords = newWords => {
-		this.setState({ newWords, currentSelected: "new_words" });
+		this.setState({ newWords, currentSelected: "about_imported" });
 	};
 
 	//reset state when clicked on header to come back on home page
 	resetState = () =>
 		this.setState({
 			currentSelected: null,
-			newWords: null,
-			aboutImported: { type: null }
+			newWords: null
 		});
 
 	handleSetAboutImported = about => {
-		uploadSrtFileToServer(this.state.crtFile, about);
-		this.setState({ aboutImported: about });
+		uploadImportedWordsToDB(about, this.state.newWords);
+
+		this.setState({ currentSelected: "new_words" });
 	};
 
 	render() {
@@ -117,25 +115,32 @@ class VocabBuilder extends Component {
 			<div className="vocab-builder">
 				<h1 onClick={this.resetState}>Vocab Builder</h1>
 				<main>
-					{renderingComponent &&
-					(this.state.aboutImported.type !== null ||
-						this.state.currentSelected !== "new_words") ? (
+					{this.state.currentSelected === "new_words" ||
+					this.state.currentSelected === "learning_words" ? (
 						renderingComponent
 					) : (
 						<Fragment>
-							<DropZone addFile={this.handleCrtFile} />
-							<div
-								className="card learning-word-option"
-								onClick={() =>
-									this.setState({ currentSelected: "learning_words" })
-								}
-							>
-								Learning Words
+							<div className="">
+								<DropZone addFile={this.handleCrtFile} />
+								<div
+									className="card learning-word-option"
+									onClick={() =>
+										this.setState({ currentSelected: "learning_words" })
+									}
+								>
+									Learning Words
+								</div>
 							</div>
+							{/* <div className="uploaded-items"></div> */}
+							{
+								<UploadedItems
+									downloadCrtFileFromServer={this.downloadCrtFileFromServer}
+									uploadedItems={this.state.uploadedItems}
+								/>
+							}
 						</Fragment>
 					)}
-					{this.state.aboutImported.type === null &&
-					this.state.currentSelected === "new_words" ? (
+					{this.state.currentSelected === "about_imported" ? (
 						<AboutImported
 							close={() =>
 								this.setState({ currentSelected: null, newWords: null })
