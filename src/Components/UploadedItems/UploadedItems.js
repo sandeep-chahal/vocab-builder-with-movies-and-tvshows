@@ -4,11 +4,10 @@ const UploadedItems = props => {
 	const [filteredItems, setFilteredItems] = useState(null);
 
 	const handleClick = item => {
-		props.downloadCrtFileFromServer(item);
+		props.getUploadedWords(item.key);
 	};
 
-	const displayTvShows = obj => {
-		console.log(Object.keys(obj));
+	const diaplyUploaded = obj => {
 		return Object.keys(obj || {}).map(item => (
 			<div onClick={() => handleClick(obj[item])} key={item}>
 				{item.toUpperCase()}
@@ -18,7 +17,9 @@ const UploadedItems = props => {
 	return (
 		<div className="uploaded-items">
 			<input type="text" className="search" />
-			{displayTvShows(props.uploadedItems["tv-show"])}
+			{diaplyUploaded(props.uploadedItems["tv-show"])}
+			{diaplyUploaded(props.uploadedItems["movie"])}
+			{diaplyUploaded(props.uploadedItems["random"])}
 		</div>
 	);
 };

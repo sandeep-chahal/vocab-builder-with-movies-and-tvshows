@@ -94,6 +94,19 @@ class VocabBuilder extends Component {
 		this.setState({ currentSelected: "new_words" });
 	};
 
+	getUploadedWords = key => {
+		firebase
+			.database()
+			.ref("uploadedWords")
+			.child(key)
+			.once("value", snap => {
+				this.setState({
+					newWords: snap.val(),
+					currentSelected: "new_words"
+				});
+			});
+	};
+
 	render() {
 		// if loading then show spinner
 		if (this.state.loading)
@@ -134,7 +147,7 @@ class VocabBuilder extends Component {
 							{/* <div className="uploaded-items"></div> */}
 							{
 								<UploadedItems
-									downloadCrtFileFromServer={this.downloadCrtFileFromServer}
+									getUploadedWords={this.getUploadedWords}
 									uploadedItems={this.state.uploadedItems}
 								/>
 							}
