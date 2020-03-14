@@ -5,9 +5,9 @@ class AboutImported extends React.Component {
 	state = {
 		type: "random",
 		name: "",
-		season: 0,
-		episode: 0,
-		link: 0
+		season: null,
+		episode: null,
+		link: null
 	};
 
 	displayInputs = type => {

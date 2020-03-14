@@ -3,7 +3,6 @@ import "./UploadedItems.css";
 
 const UploadedItems = props => {
 	const [filteredItems, setFilteredItems] = useState(null);
-	const [searchText, setSearchText] = useState("");
 
 	const handleClick = item => {
 		props.getUploadedWords(item.key);
@@ -12,7 +11,7 @@ const UploadedItems = props => {
 	const diaplyUploaded = obj => {
 		return Object.keys(obj || {}).map(item => (
 			<div className="item" onClick={() => handleClick(obj[item])} key={item}>
-				{item.toUpperCase()}
+				{item}
 			</div>
 		));
 	};
@@ -24,6 +23,7 @@ const UploadedItems = props => {
 	};
 
 	const filterItems = value => {
+		value = value.toLowerCase();
 		const itemsNames = Object.keys(props.uploadedItems || {});
 		const filteredObj = {};
 		itemsNames.forEach(item =>
