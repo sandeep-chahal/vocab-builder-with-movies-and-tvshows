@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./UploadedItems.css";
+import Spinner from "../../Assets/Dual Ring.svg";
 
 const UploadedItems = props => {
 	const [filteredItems, setFilteredItems] = useState(null);
@@ -8,7 +9,7 @@ const UploadedItems = props => {
 		props.getUploadedWords(item.key);
 	};
 
-	const diaplyUploaded = obj => {
+	const displayUplaodedWords = obj => {
 		return Object.keys(obj || {}).map(item => (
 			<div className="item" onClick={() => handleClick(obj[item])} key={item}>
 				{item}
@@ -33,6 +34,7 @@ const UploadedItems = props => {
 		);
 		setFilteredItems(filteredObj);
 	};
+
 	return (
 		<div className="uploaded-items">
 			<input
@@ -42,9 +44,17 @@ const UploadedItems = props => {
 				onChange={handleInput}
 			/>
 			<div className="items-wrapper">
-				{filteredItems
-					? diaplyUploaded(filteredItems)
-					: diaplyUploaded(props.uploadedItems)}
+				{props.downloadingWords ? (
+					<img
+						alt="downloading...."
+						src={Spinner}
+						className="downloadingSpinner"
+					/>
+				) : filteredItems ? (
+					displayUplaodedWords(filteredItems)
+				) : (
+					displayUplaodedWords(props.uploadedItems)
+				)}
 			</div>
 		</div>
 	);

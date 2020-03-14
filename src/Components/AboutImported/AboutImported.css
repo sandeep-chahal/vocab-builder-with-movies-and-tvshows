@@ -50,3 +50,7 @@ input {
 	color: #fff;
 	cursor: pointer;
 }
+
+.uploadingSpinner {
+	width: 5rem;
+}

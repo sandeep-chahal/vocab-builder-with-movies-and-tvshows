@@ -17,7 +17,7 @@ export const moveToLearnedFromLearning = word => {
 	learnedRef.child(word).set(true);
 };
 
-export const uploadImportedWordsToDB = (aboutWordsObj, words) => {
+export const uploadImportedWordsToDB = (aboutWordsObj, words, callBackFN) => {
 	let path = aboutWordsObj.name.toLowerCase();
 	path +=
 		aboutWordsObj.type === "tv-show"
@@ -34,9 +34,11 @@ export const uploadImportedWordsToDB = (aboutWordsObj, words) => {
 				.database()
 				.ref("uploadedWords")
 				.child(key)
-				.set(words);
+				.set(words)
+				.then(() => callBackFN())
+				.catch(() => callBackFN());
 
 			uploadRef.child(path).set({ ...aboutWordsObj, key });
-		}
+		} else callBackFN();
 	});
 };

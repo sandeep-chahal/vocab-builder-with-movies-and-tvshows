@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import "./AboutImported.css";
+import Spinner from "../../Assets/Dual Ring.svg";
 
 class AboutImported extends React.Component {
 	state = {
@@ -98,9 +99,13 @@ class AboutImported extends React.Component {
 						<option value="yt-video">YT Video</option>
 					</select>
 					{this.displayInputs(this.state.type)}
-					<div className="submit-btn" onClick={this.handleSubmit}>
-						Done
-					</div>
+					{this.props.uploadingWords ? (
+						<img alt="wait..." src={Spinner} className="uploadingSpinner" />
+					) : (
+						<div className="submit-btn" onClick={this.handleSubmit}>
+							Done
+						</div>
+					)}
 				</div>
 			</div>
 		);

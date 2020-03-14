@@ -25,7 +25,9 @@ class VocabBuilder extends Component {
 		learnRef: firebase.database().ref("learn"),
 		learnedRef: firebase.database().ref("learned"),
 		uploadsRef: firebase.database().ref("uploads"),
-		uploadedItems: null
+		uploadedItems: null,
+		uploadingWords: false,
+		downloadingWords: false
 	};
 
 	componentDidMount() {
@@ -89,12 +91,14 @@ class VocabBuilder extends Component {
 		});
 
 	handleSetAboutImported = about => {
-		uploadImportedWordsToDB(about, this.state.newWords);
-
-		this.setState({ currentSelected: "new_words" });
+		this.setState({ uploadingWords: true });
+		uploadImportedWordsToDB(about, this.state.newWords, () =>
+			this.setState({ currentSelected: "new_words", uploadingWords: false })
+		);
 	};
 
 	getUploadedWords = key => {
+		this.setState({ downloadingWords: true });
 		firebase
 			.database()
 			.ref("uploadedWords")
@@ -102,7 +106,8 @@ class VocabBuilder extends Component {
 			.once("value", snap => {
 				this.setState({
 					newWords: snap.val(),
-					currentSelected: "new_words"
+					currentSelected: "new_words",
+					downloadingWords: false
 				});
 			});
 	};
@@ -147,6 +152,7 @@ class VocabBuilder extends Component {
 							{/* <div className="uploaded-items"></div> */}
 							{
 								<UploadedItems
+									downloadingWords={this.state.downloadingWords}
 									getUploadedWords={this.getUploadedWords}
 									uploadedItems={this.state.uploadedItems}
 								/>
@@ -159,6 +165,7 @@ class VocabBuilder extends Component {
 								this.setState({ currentSelected: null, newWords: null })
 							}
 							setAbout={this.handleSetAboutImported}
+							uploadingWords={this.state.uploadingWords}
 						/>
 					) : null}
 				</main>
