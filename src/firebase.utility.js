@@ -18,7 +18,7 @@ export const moveToLearnedFromLearning = word => {
 };
 
 export const uploadImportedWordsToDB = (aboutWordsObj, words) => {
-	let path = aboutWordsObj.type + "/" + aboutWordsObj.name.toLowerCase();
+	let path = aboutWordsObj.name.toLowerCase();
 	path +=
 		aboutWordsObj.type === "tv-show"
 			? ` S${aboutWordsObj.season} E${aboutWordsObj.episode}`

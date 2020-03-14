@@ -3,6 +3,7 @@ import "./UploadedItems.css";
 
 const UploadedItems = props => {
 	const [filteredItems, setFilteredItems] = useState(null);
+	const [searchText, setSearchText] = useState("");
 
 	const handleClick = item => {
 		props.getUploadedWords(item.key);
@@ -15,13 +16,35 @@ const UploadedItems = props => {
 			</div>
 		));
 	};
+	const handleInput = e => {
+		let value = e.target.value;
+		if (value.length > 2) {
+			filterItems(value);
+		} else setFilteredItems(null);
+	};
+
+	const filterItems = value => {
+		const itemsNames = Object.keys(props.uploadedItems || {});
+		const filteredObj = {};
+		itemsNames.forEach(item =>
+			item.includes(value)
+				? (filteredObj[item] = props.uploadedItems[item])
+				: null
+		);
+		setFilteredItems(filteredObj);
+	};
 	return (
 		<div className="uploaded-items">
-			<input type="text" className="search" placeholder="search..." />
+			<input
+				type="text"
+				className="search"
+				placeholder="search..."
+				onChange={handleInput}
+			/>
 			<div className="items-wrapper">
-				{diaplyUploaded(props.uploadedItems["tv-show"])}
-				{diaplyUploaded(props.uploadedItems["movie"])}
-				{diaplyUploaded(props.uploadedItems["random"])}
+				{filteredItems
+					? diaplyUploaded(filteredItems)
+					: diaplyUploaded(props.uploadedItems)}
 			</div>
 		</div>
 	);
