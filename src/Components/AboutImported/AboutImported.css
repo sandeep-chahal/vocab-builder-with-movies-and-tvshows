@@ -54,3 +54,24 @@ input {
 .uploadingSpinner {
 	width: 5rem;
 }
+
+@media screen and (max-width: 600px) {
+	.popup {
+		width: 80%;
+		padding: 3rem;
+	}
+
+	select {
+		width: 80%;
+	}
+	.popup input {
+		width: 80%;
+		margin: 1rem;
+		border: 1px solid #ccc;
+		padding: 0.8rem;
+	}
+
+	.submit-btn {
+		margin-top: 3rem;
+	}
+}
