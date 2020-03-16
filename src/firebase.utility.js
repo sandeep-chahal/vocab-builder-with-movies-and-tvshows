@@ -1,20 +1,34 @@
 import firebase from "./firebase";
 
 const ignoreRef = firebase.database().ref("ignore");
-const learnRef = firebase.database().ref("learn");
-const learnedRef = firebase.database().ref("learned");
 const uploadRef = firebase.database().ref("uploads");
+const usersRef = firebase.database().ref("users");
 
 // update or add new words to firebase
-export const updateWordList = (ignoreList, learnedList, learnList) => {
+export const updateWordList = (uid, ignoreList, learnedList, learnList) => {
+	usersRef
+		.child(uid)
+		.child("learned")
+		.update(learnedList);
+	usersRef
+		.child(uid)
+		.child("learn")
+		.update(learnList);
 	ignoreRef.update(ignoreList);
-	learnRef.update(learnList);
-	learnedRef.update(learnedList);
 };
 
 export const moveToLearnedFromLearning = word => {
-	learnRef.child(word).remove();
-	learnedRef.child(word).set(true);
+	const uid = firebase.auth().currentUser.uid;
+	usersRef
+		.child(uid)
+		.child("learn")
+		.child(word)
+		.remove();
+	usersRef
+		.child(uid)
+		.child("learned")
+		.child(word)
+		.set(true);
 };
 
 export const uploadImportedWordsToDB = (aboutWordsObj, words, callBackFN) => {

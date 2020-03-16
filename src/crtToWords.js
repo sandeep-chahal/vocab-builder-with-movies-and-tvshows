@@ -1,8 +1,7 @@
 const addCrtFile = (
 	file,
 	ignoreList,
-	learnedList,
-	learningList,
+
 	setNewWords
 ) => {
 	var reader = new FileReader();
@@ -12,8 +11,7 @@ const addCrtFile = (
 		words = filterWords(
 			text,
 			ignoreList,
-			learnedList,
-			learningList,
+
 			setNewWords
 		);
 	};
@@ -26,19 +24,13 @@ const addCrtFile = (
 const filterWords = (
 	input,
 	ignoreList,
-	learnedList,
-	learningList,
+
 	setNewWords
 ) => {
 	let words = input.split(/[\s,]+/);
 	words = words.map(word => word.replace(/\.|,|"|!|\?/g, "").toLowerCase());
 	words = words.filter(
-		word =>
-			/^[a-zA-Z]+$/.test(word) &&
-			word.length > 2 &&
-			!ignoreList[word] &&
-			!learningList[word] &&
-			!learnedList[word]
+		word => /^[a-zA-Z]+$/.test(word) && word.length > 2 && !ignoreList[word]
 	);
 	const wordsObj = {};
 	words.forEach(word => {
@@ -50,15 +42,13 @@ const filterWords = (
 const getWordList = (
 	crtFile,
 	ignoreList,
-	learnedList,
-	learningList,
+
 	setNewWords
 ) => {
 	const words = addCrtFile(
 		crtFile,
 		ignoreList,
-		learnedList,
-		learningList,
+
 		setNewWords
 	);
 };

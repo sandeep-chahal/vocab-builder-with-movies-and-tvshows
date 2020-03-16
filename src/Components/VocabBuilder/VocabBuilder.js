@@ -19,13 +19,14 @@ class VocabBuilder extends Component {
 	state = {
 		ignoreList: null,
 		learnedList: null,
-		learningList: null,
+		learnList: null,
 		currentSelected: null,
 		loading: true,
 		ignoreRef: firebase.database().ref("ignore"),
 		learnRef: firebase.database().ref("learn"),
 		learnedRef: firebase.database().ref("learned"),
 		uploadsRef: firebase.database().ref("uploads"),
+		usersRef: firebase.database().ref("users"),
 		uploadedItems: null,
 		uploadingWords: false,
 		downloadingWords: false,
@@ -35,23 +36,26 @@ class VocabBuilder extends Component {
 
 	componentDidMount() {
 		firebase.auth().onAuthStateChanged(user => {
-			if (user) {
-				this.setState({ user, showAuth: false });
-				this.addListners(user);
-			}
+			this.setState({ user, showAuth: false });
+			this.addListners(user);
 		});
 	}
 
 	//set listners to db word lists
-	addListners() {
-		this.state.ignoreRef.on("value", snap => {
+	addListners(user) {
+		if (user) {
+			const usersRef = this.state.usersRef;
+			usersRef.child(user.uid).on("value", snap => {
+				const data = snap.val();
+				if (data)
+					this.setState({
+						learnList: data.learn || {},
+						learnedList: data.learned || {}
+					});
+			});
+		}
+		this.state.ignoreRef.once("value", snap => {
 			this.setState({ ignoreList: snap.val() });
-		});
-		this.state.learnedRef.on("value", snap => {
-			this.setState({ learnedList: snap.val() || {} });
-		});
-		this.state.learnRef.on("value", snap => {
-			this.setState({ learningList: snap.val() || {} });
 		});
 		this.state.uploadsRef.once("value", snap => {
 			this.setState({ uploadedItems: snap.val() || {}, loading: false });
@@ -69,21 +73,19 @@ class VocabBuilder extends Component {
 
 	//to update db and state after adding words to learned, learing and ignore list from newWords list
 	updateWords = (ignoreList, learnedList, learnList) => {
-		//update in db
-		updateWordList(ignoreList, learnedList, learnList);
-		//remove from state
-		this.removeFromNewWords({ ...ignoreList, ...learnList, ...learnedList });
+		if (!this.state.user) {
+			this.setState({ showAuth: true });
+		} else {
+			//update in db
+			updateWordList(this.state.user.uid, ignoreList, learnedList, learnList);
+			//remove from state
+			this.removeFromNewWords({ ...ignoreList, ...learnList, ...learnedList });
+		}
 	};
 
 	//extract words from crt file
 	handleCrtFile = file => {
-		getWordList(
-			file,
-			this.state.ignoreList,
-			this.state.learnedList,
-			this.state.learningList,
-			this.setNewWords
-		);
+		getWordList(file, this.state.ignoreList, this.setNewWords);
 	};
 
 	//add newWords list to state after extracting from crt file
@@ -135,7 +137,7 @@ class VocabBuilder extends Component {
 				/>
 			);
 		else if (this.state.currentSelected === "learning_words")
-			renderingComponent = <LearningWords words={this.state.learningList} />;
+			renderingComponent = <LearningWords words={this.state.learnList} />;
 
 		return (
 			<div className="vocab-builder">
