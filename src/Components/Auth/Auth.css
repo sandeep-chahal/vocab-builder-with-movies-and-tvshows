@@ -1,0 +1,26 @@
+.auth {
+	width: 25rem;
+	height: 30rem;
+	background-color: #fff;
+	display: flex;
+	justify-content: center;
+	border-radius: 0.5rem;
+
+	align-items: center;
+}
+
+.google-btn {
+	font-size: 1.6rem;
+	background-color: #2f89fc;
+	color: #fff;
+	padding: 0.5rem 1rem;
+	border-radius: 0.2rem;
+	transition: all 0.15s ease-out;
+	cursor: pointer;
+}
+.google-btn:hover {
+	transform: translateY(-5px);
+}
+.google-btn:active {
+	transform: translateY(2px);
+}

@@ -3,6 +3,7 @@ import "./VocabBuilder.css";
 import Spinner from "../../Assets/Infinity-loader.svg";
 
 import firebase from "../../firebase";
+import Auth from "../Auth/Auth";
 import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
 import ImportedWords from "../ImportedWords";
@@ -27,11 +28,18 @@ class VocabBuilder extends Component {
 		uploadsRef: firebase.database().ref("uploads"),
 		uploadedItems: null,
 		uploadingWords: false,
-		downloadingWords: false
+		downloadingWords: false,
+		showAuth: false,
+		user: null
 	};
 
 	componentDidMount() {
-		this.addListners();
+		firebase.auth().onAuthStateChanged(user => {
+			if (user) {
+				this.setState({ user, showAuth: false });
+				this.addListners(user);
+			}
+		});
 	}
 
 	//set listners to db word lists
@@ -142,9 +150,11 @@ class VocabBuilder extends Component {
 								<DropZone addFile={this.handleCrtFile} />
 								<div
 									className="card learning-word-option"
-									onClick={() =>
-										this.setState({ currentSelected: "learning_words" })
-									}
+									onClick={() => {
+										if (!this.state.user) {
+											this.setState({ showAuth: true });
+										} else this.setState({ currentSelected: "learning_words" });
+									}}
 								>
 									Learning Words
 								</div>
@@ -167,6 +177,9 @@ class VocabBuilder extends Component {
 							setAbout={this.handleSetAboutImported}
 							uploadingWords={this.state.uploadingWords}
 						/>
+					) : null}
+					{this.state.showAuth ? (
+						<Auth close={() => this.setState({ showAuth: false })} />
 					) : null}
 				</main>
 			</div>
