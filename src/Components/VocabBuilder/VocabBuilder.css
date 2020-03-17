@@ -39,6 +39,7 @@ nav {
 	display: flex;
 	justify-content: space-between;
 	padding: 0 2rem;
+	align-items: center;
 }
 .auth-btn {
 	font-size: 1.4rem;
@@ -152,6 +153,13 @@ nav {
 	h1 {
 		text-align: center;
 		margin-top: 2rem;
+	}
+	h1:hover {
+		animation: none;
+		letter-spacing: 2px;
+	}
+	h1:active {
+		letter-spacing: 4px;
 	}
 
 	.words-list {
