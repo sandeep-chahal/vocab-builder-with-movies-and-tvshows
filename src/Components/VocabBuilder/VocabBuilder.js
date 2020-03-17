@@ -122,6 +122,14 @@ class VocabBuilder extends Component {
 			});
 	};
 
+	handleAuthClick = () => {
+		if (this.state.user) {
+			firebase.auth().signOut();
+		} else {
+			this.setState({ showAuth: true });
+		}
+	};
+
 	render() {
 		// if loading then show spinner
 		if (this.state.loading)
@@ -141,7 +149,12 @@ class VocabBuilder extends Component {
 
 		return (
 			<div className="vocab-builder">
-				<h1 onClick={this.resetState}>Vocab Builder</h1>
+				<nav>
+					<h1 onClick={this.resetState}>Vocab Builder</h1>
+					<div className="auth-btn" onClick={this.handleAuthClick}>
+						{this.state.user ? "Logout" : "Login"}
+					</div>
+				</nav>
 				<main>
 					{this.state.currentSelected === "new_words" ||
 					this.state.currentSelected === "learning_words" ? (
