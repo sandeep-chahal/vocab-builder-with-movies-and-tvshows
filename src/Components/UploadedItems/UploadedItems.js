@@ -6,7 +6,7 @@ const UploadedItems = (props) => {
 	const [items, setItems] = useState([]);
 	const [title, setTitle] = useState(null);
 	const [titles, setTitles] = useState(null);
-	const api = process.env.THEMOVIEDB_API;
+	const api = process.env.REACT_APP_THEMOVIEDB_API;
 
 	const fetchItems = async (input) => {
 		const req = await fetch(

@@ -17,11 +17,12 @@ import UploadedItems from "../UploadedItems/UploadedItems";
 import OS from "opensubtitles-api";
 
 const OpenSubtitles = new OS({
-	useragent: process.env.USERAGENT,
-	username: process.env.USERNAME,
-	password: process.env.PASSWORD,
+	useragent: process.env.REACT_APP_USERAGENT,
+	username: process.env.REACT_APP_USERNAME,
+	password: process.env.REACT_APP_PASSWORD,
 	ssl: true,
 });
+console.log(process.env.NODE_ENV, process.env.REACT_APP_USERNAME);
 OpenSubtitles.login().catch((err) => {
 	alert("api not working");
 	console.log(err);
