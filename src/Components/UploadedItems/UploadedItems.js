@@ -2,47 +2,102 @@ import React, { useState } from "react";
 import "./UploadedItems.css";
 import Spinner from "../../Assets/Dual Ring.svg";
 
-const UploadedItems = props => {
-	const [filteredItems, setFilteredItems] = useState(null);
+const UploadedItems = (props) => {
+	const [items, setItems] = useState([]);
+	const [title, setTitle] = useState(null);
+	const [titles, setTitles] = useState(null);
+	const api = process.env.THEMOVIEDB_API;
 
-	const handleClick = item => {
-		props.getUploadedWords(item.key);
+	const fetchItems = async (input) => {
+		const req = await fetch(
+			`https://api.themoviedb.org/3/search/multi?api_key=${api}&language=en-US&query=${input}&page=1&include_adult=false`
+		);
+		const res = await req.json();
+		setTitles(res.results);
 	};
 
-	const displayUplaodedWords = obj => {
-		return Object.keys(obj || {}).map(item => (
-			<div className="item" onClick={() => handleClick(obj[item])} key={item}>
-				{item}
+	const handleInput = (e) => {
+		const input = e.target.value;
+		if (input.length > 2) {
+			fetchItems(input);
+		} else if (!items.length) {
+			setItems([]);
+		}
+	};
+
+	const displayTitles = () => {
+		return titles.map((title) => {
+			return (
+				<div
+					key={title.title || title.original_name}
+					onClick={() => {
+						handleTitleSearch(title);
+					}}
+				>
+					{title.title || title.original_name}
+				</div>
+			);
+		});
+	};
+
+	const handleTitleSearch = async (title) => {
+		const req = await fetch(
+			`https://api.themoviedb.org/3/tv/${title.id}?api_key=${api}&language=en-US`
+		);
+		const res = await req.json();
+		console.log(res);
+		let temp = Object.values(res.seasons);
+		if (!temp[0].season_number) temp = temp.slice(1);
+		setTitle({ title: res.original_name || res.title, seasons: temp });
+		setTitles(null);
+	};
+
+	const searchBar = (
+		<input
+			type="text"
+			className="search"
+			placeholder="search..."
+			onChange={handleInput}
+		/>
+	);
+
+	const displayTitle = () => {
+		console.log(title);
+		const temp = [];
+		title.seasons.forEach((seasons) => {
+			for (let e = 1; e <= seasons.episode_count; e++) {
+				temp.push(`S${seasons.season_number}E${e}`);
+			}
+		});
+		console.log(temp);
+		return temp.map((se) => (
+			<div onClick={() => handleGetSRT(`${title.title} ${se}`)} key={se}>
+				{se}
 			</div>
 		));
 	};
-	const handleInput = e => {
-		let value = e.target.value;
-		if (value.length > 2) {
-			filterItems(value);
-		} else setFilteredItems(null);
+
+	const handleGetSRT = (search) => {
+		props.OpenSubtitles.search({
+			query: search,
+		}).then((subs) => {
+			props.getWordsFromApi(subs.en.utf8);
+			console.log(subs.en);
+		});
 	};
 
-	const filterItems = value => {
-		value = value.toLowerCase();
-		const itemsNames = Object.keys(props.uploadedItems || {});
-		const filteredObj = {};
-		itemsNames.forEach(item =>
-			item.includes(value)
-				? (filteredObj[item] = props.uploadedItems[item])
-				: null
-		);
-		setFilteredItems(filteredObj);
+	const display = () => {
+		if (titles) {
+			return displayTitles();
+		}
+		if (title) {
+			return displayTitle();
+		}
 	};
 
 	return (
 		<div className="uploaded-items">
-			<input
-				type="text"
-				className="search"
-				placeholder="search..."
-				onChange={handleInput}
-			/>
+			{searchBar}
 			<div className="items-wrapper">
 				{props.downloadingWords ? (
 					<img
@@ -50,10 +105,8 @@ const UploadedItems = props => {
 						src={Spinner}
 						className="downloadingSpinner"
 					/>
-				) : filteredItems ? (
-					displayUplaodedWords(filteredItems)
 				) : (
-					displayUplaodedWords(props.uploadedItems)
+					display()
 				)}
 			</div>
 		</div>

@@ -7,14 +7,25 @@ import Auth from "../Auth/Auth";
 import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
 import ImportedWords from "../ImportedWords";
-import getWordList from "../../crtToWords";
+import getWordList, { filterWords } from "../../crtToWords";
 import {
 	updateWordList,
-	uploadImportedWordsToDB
+	uploadImportedWordsToDB,
 } from "../../firebase.utility";
 import AboutImported from "../AboutImported/AboutImported";
 import UploadedItems from "../UploadedItems/UploadedItems";
+import OS from "opensubtitles-api";
 
+const OpenSubtitles = new OS({
+	useragent: process.env.USERAGENT,
+	username: process.env.USERNAME,
+	password: process.env.PASSWORD,
+	ssl: true,
+});
+OpenSubtitles.login().catch((err) => {
+	alert("api not working");
+	console.log(err);
+});
 class VocabBuilder extends Component {
 	state = {
 		ignoreList: null,
@@ -31,11 +42,11 @@ class VocabBuilder extends Component {
 		uploadingWords: false,
 		downloadingWords: false,
 		showAuth: false,
-		user: null
+		user: null,
 	};
 
 	componentDidMount() {
-		firebase.auth().onAuthStateChanged(user => {
+		firebase.auth().onAuthStateChanged((user) => {
 			this.setState({ user, showAuth: false });
 			this.addListners(user);
 		});
@@ -45,27 +56,27 @@ class VocabBuilder extends Component {
 	addListners(user) {
 		if (user) {
 			const usersRef = this.state.usersRef;
-			usersRef.child(user.uid).on("value", snap => {
+			usersRef.child(user.uid).on("value", (snap) => {
 				const data = snap.val();
 				if (data)
 					this.setState({
 						learnList: data.learn || {},
-						learnedList: data.learned || {}
+						learnedList: data.learned || {},
 					});
 			});
 		}
-		this.state.ignoreRef.once("value", snap => {
+		this.state.ignoreRef.once("value", (snap) => {
 			this.setState({ ignoreList: snap.val() });
 		});
-		this.state.uploadsRef.once("value", snap => {
+		this.state.uploadsRef.once("value", (snap) => {
 			this.setState({ uploadedItems: snap.val() || {}, loading: false });
 		});
 	}
 
 	//remove words from newWords list
-	removeFromNewWords = list => {
+	removeFromNewWords = (list) => {
 		const words = { ...this.state.newWords };
-		Object.keys(list).forEach(word => {
+		Object.keys(list).forEach((word) => {
 			delete words[word];
 		});
 		this.setState({ newWords: words });
@@ -84,12 +95,12 @@ class VocabBuilder extends Component {
 	};
 
 	//extract words from crt file
-	handleCrtFile = file => {
+	handleCrtFile = (file) => {
 		getWordList(file, this.state.ignoreList, this.setNewWords);
 	};
 
 	//add newWords list to state after extracting from crt file
-	setNewWords = newWords => {
+	setNewWords = (newWords) => {
 		this.setState({ newWords, currentSelected: "about_imported" });
 	};
 
@@ -97,29 +108,31 @@ class VocabBuilder extends Component {
 	resetState = () =>
 		this.setState({
 			currentSelected: null,
-			newWords: null
+			newWords: null,
 		});
 
-	handleSetAboutImported = about => {
+	handleSetAboutImported = (about) => {
 		this.setState({ uploadingWords: true });
 		uploadImportedWordsToDB(about, this.state.newWords, () =>
 			this.setState({ currentSelected: "new_words", uploadingWords: false })
 		);
 	};
 
-	getUploadedWords = key => {
+	getWordsFromApi = async (url) => {
 		this.setState({ downloadingWords: true });
-		firebase
-			.database()
-			.ref("uploadedWords")
-			.child(key)
-			.once("value", snap => {
+		const req = await fetch(url);
+		const result = await req.text();
+		filterWords(
+			result,
+			{ ...this.state.ignoreList, ...this.state.learnedList },
+			(words) => {
 				this.setState({
-					newWords: snap.val(),
+					newWords: words,
 					currentSelected: "new_words",
-					downloadingWords: false
+					downloadingWords: false,
 				});
-			});
+			}
+		);
 	};
 
 	handleAuthClick = () => {
@@ -178,8 +191,8 @@ class VocabBuilder extends Component {
 							{
 								<UploadedItems
 									downloadingWords={this.state.downloadingWords}
-									getUploadedWords={this.getUploadedWords}
-									uploadedItems={this.state.uploadedItems}
+									getWordsFromApi={this.getWordsFromApi}
+									OpenSubtitles={OpenSubtitles}
 								/>
 							}
 						</Fragment>
