@@ -6,6 +6,8 @@
 }
 .normal_word {
 	display: inline-block;
+	text-decoration: none;
+	color: #ccc;
 }
 .new_line {
 	width: 100vw;

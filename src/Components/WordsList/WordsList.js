@@ -51,9 +51,15 @@ const WordsList = (props) => {
 			if (!word) return <div key={makeid(10)} className="new_line"></div>;
 			if (word.learn)
 				return (
-					<div key={word.word + makeid(3)} className="learn_word">
+					<a
+						rel="noopener noreferrer"
+						target="_blank"
+						href={`https://dictionary.cambridge.org/dictionary/english/${word.word}`}
+						key={word.word + makeid(3)}
+						className="learn_word"
+					>
 						{" " + word.word + " "}
-					</div>
+					</a>
 				);
 			else
 				return (
