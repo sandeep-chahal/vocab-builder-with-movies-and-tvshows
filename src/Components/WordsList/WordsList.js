@@ -1,28 +1,29 @@
 import React, { useState } from "react";
 import Word from "./Word";
+import "./word_list_style.css";
 
-const WordsList = props => {
+const WordsList = (props) => {
 	const [ignoreList, addIgnore] = useState({});
 	const [learnedList, addLearned] = useState({});
 	const [learnList, addLearn] = useState({});
 
-	const addToIgnore = word => {
+	const addToIgnore = (word) => {
 		addIgnore({
 			...ignoreList,
-			[word]: true
+			[word]: true,
 		});
 	};
 
-	const addToLearn = word => {
+	const addToLearn = (word) => {
 		addLearn({
 			...learnList,
-			[word]: true
+			[word]: true,
 		});
 	};
-	const addToLearned = word => {
+	const addToLearned = (word) => {
 		addLearned({
 			...learnedList,
-			[word]: true
+			[word]: true,
 		});
 	};
 
@@ -32,20 +33,35 @@ const WordsList = props => {
 		addLearned({});
 	};
 
-	const displayWords = words => {
-		words = Object.keys(props.words || {});
-		return words.map(word => (
-			<Word
-				type={props.type}
-				key={word}
-				word={word}
-				addToLearn={addToLearn}
-				addToIgnore={addToIgnore}
-				addToLearned={addToLearned}
-				stored={ignoreList[word] || learnedList[word] || learnList[word]}
-				moveToLearnedFromLearning={props.moveToLearnedFromLearning}
-			/>
-		));
+	const displayWords = (words) => {
+		// words = Object.keys(props.words || {});
+		// return words.filter(word => word.learn).map(word => (
+		// 	<Word
+		// 		type={props.type}
+		// 		key={word.word}
+		// 		word={word.word}
+		// 		addToLearn={addToLearn}
+		// 		addToIgnore={addToIgnore}
+		// 		addToLearned={addToLearned}
+		// 		stored={ignoreList[word] || learnedList[word] || learnList[word]}
+		// 		moveToLearnedFromLearning={props.moveToLearnedFromLearning}
+		// 	/>
+		// ));
+		return words.map((word) => {
+			if (!word) return <div key={makeid(10)} className="new_line"></div>;
+			if (word.learn)
+				return (
+					<div key={word.word + makeid(3)} className="learn_word">
+						{" " + word.word + " "}
+					</div>
+				);
+			else
+				return (
+					<div key={word.word} className="normal_word">
+						{word.word}
+					</div>
+				);
+		});
 	};
 
 	return (
@@ -69,3 +85,13 @@ const WordsList = props => {
 	);
 };
 export default WordsList;
+function makeid(length) {
+	var result = "";
+	var characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	var charactersLength = characters.length;
+	for (var i = 0; i < length; i++) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+}

@@ -1,0 +1,12 @@
+.learn_word {
+	background: #ffe766;
+	padding: 0 3px;
+	margin: 0 5px;
+	display: inline-block;
+}
+.normal_word {
+	display: inline-block;
+}
+.new_line {
+	width: 100vw;
+}

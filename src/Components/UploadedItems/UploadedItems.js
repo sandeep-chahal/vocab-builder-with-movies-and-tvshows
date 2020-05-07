@@ -10,7 +10,7 @@ const UploadedItems = (props) => {
 
 	const fetchItems = async (input) => {
 		const req = await fetch(
-			`https://api.themoviedb.org/3/search/multi?api_key=${api}&language=en-US&query=${input}&page=1&include_adult=false`
+			`https://api.themoviedb.org/3/search/multi?api_key=${"api"}&language=en-US&query=${input}&page=1&include_adult=false`
 		);
 		const res = await req.json();
 		setTitles(res.results);
