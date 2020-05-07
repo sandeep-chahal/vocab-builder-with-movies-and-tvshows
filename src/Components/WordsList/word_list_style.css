@@ -3,11 +3,12 @@
 	padding: 0 3px;
 	margin: 0 5px;
 	display: inline-block;
+	color: #333;
 }
 .normal_word {
 	display: inline-block;
 	text-decoration: none;
-	color: #ccc;
+	color: #333;
 }
 .new_line {
 	width: 100vw;
