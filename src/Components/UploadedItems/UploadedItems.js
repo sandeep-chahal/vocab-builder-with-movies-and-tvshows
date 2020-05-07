@@ -29,6 +29,7 @@ const UploadedItems = (props) => {
 		return titles.map((title) => {
 			return (
 				<div
+					className="item"
 					key={title.title || title.original_name}
 					onClick={() => {
 						handleTitleSearch(title);

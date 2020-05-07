@@ -73,7 +73,7 @@ const WordsList = (props) => {
 	return (
 		<div className="words-list-wrapper">
 			<div className="word-counter">
-				Total Words: {props.words.filter((word) => word.learn).length}
+				Total Words: {props.words.filter((word) => word || word.learn).length}
 			</div>
 			<div className="words-list">{displayWords(props.words)}</div>
 			{props.type === "new_words" ? (
