@@ -1,9 +1,16 @@
 .uploaded-items {
+	overflow-y: auto;
+
 	padding: 1rem;
 	border-radius: 1rem;
-	width: 70%;
+	width: 90%;
 	background-color: #ffcdab;
+	color: #333;
 	max-height: 85vh;
+}
+.overflow {
+	overflow-y: auto;
+	height: 85%;
 }
 
 .search {
@@ -13,21 +20,43 @@
 	border-radius: 1rem;
 	border: 2px solid transparent;
 }
+select {
+	margin: 10px auto;
+	width: 50%;
+	display: block;
+	border: none;
+	padding: 5px;
+}
+
 .search:focus {
 	outline: none;
 	border: 2px solid var(--yellow);
 }
 
 .items-wrapper {
-	height: 95%;
 	display: flex;
-	flex-direction: column;
+	/* flex-direction: column; */
+	flex-wrap: wrap;
+	justify-content: center;
 	overflow-x: hidden;
-	overflow-y: scroll;
 	padding: 3rem 5rem;
 }
-
+.titles {
+	margin: 10px;
+	cursor: pointer;
+	text-align: center;
+	width: 200px;
+	height: 350px;
+	font-size: 18px;
+}
+.img {
+	width: 100%;
+	height: 80%;
+	background-size: cover;
+	background-position: center;
+}
 .item {
+	width: 100%;
 	cursor: pointer;
 	font-size: 1.8rem;
 	margin-top: 0.5rem;

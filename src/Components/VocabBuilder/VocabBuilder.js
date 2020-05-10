@@ -1,19 +1,18 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import "./VocabBuilder.css";
 import Spinner from "../../Assets/Infinity-loader.svg";
 
 import firebase from "../../firebase";
 import Auth from "../Auth/Auth";
-import DropZone from "../DropZone/DropZone";
 import LearningWords from "../LearningWords";
 import ImportedWords from "../ImportedWords";
-import getWordList, { filterWords } from "../../crtToWords";
+import filterWords from "../../filterWords";
 import {
 	updateWordList,
 	uploadImportedWordsToDB,
 } from "../../firebase.utility";
 import AboutImported from "../AboutImported/AboutImported";
-import UploadedItems from "../UploadedItems/UploadedItems";
+import SearchItems from "../SearchItems/SearchItems";
 import OS from "opensubtitles-api";
 
 const OpenSubtitles = new OS({
@@ -95,11 +94,6 @@ class VocabBuilder extends Component {
 		}
 	};
 
-	//extract words from crt file
-	handleCrtFile = (file) => {
-		getWordList(file, this.state.ignoreList, this.setNewWords);
-	};
-
 	//add newWords list to state after extracting from crt file
 	setNewWords = (newWords) => {
 		this.setState({ newWords, currentSelected: "about_imported" });
@@ -165,6 +159,15 @@ class VocabBuilder extends Component {
 			<div className="vocab-builder">
 				<nav>
 					<h1 onClick={this.resetState}>Vocab Builder</h1>
+					<h2
+						onClick={() => {
+							if (!this.state.user) {
+								this.setState({ showAuth: true });
+							} else this.setState({ currentSelected: "learning_words" });
+						}}
+					>
+						Learning List
+					</h2>
 					<div className="auth-btn" onClick={this.handleAuthClick}>
 						{this.state.user ? "Logout" : "Login"}
 					</div>
@@ -174,29 +177,11 @@ class VocabBuilder extends Component {
 					this.state.currentSelected === "learning_words" ? (
 						renderingComponent
 					) : (
-						<Fragment>
-							<div className="">
-								<DropZone addFile={this.handleCrtFile} />
-								<div
-									className="card learning-word-option"
-									onClick={() => {
-										if (!this.state.user) {
-											this.setState({ showAuth: true });
-										} else this.setState({ currentSelected: "learning_words" });
-									}}
-								>
-									Learning Words
-								</div>
-							</div>
-							{/* <div className="uploaded-items"></div> */}
-							{
-								<UploadedItems
-									downloadingWords={this.state.downloadingWords}
-									getWordsFromApi={this.getWordsFromApi}
-									OpenSubtitles={OpenSubtitles}
-								/>
-							}
-						</Fragment>
+						<SearchItems
+							downloadingWords={this.state.downloadingWords}
+							getWordsFromApi={this.getWordsFromApi}
+							OpenSubtitles={OpenSubtitles}
+						/>
 					)}
 					{this.state.currentSelected === "about_imported" ? (
 						<AboutImported

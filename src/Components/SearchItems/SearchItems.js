@@ -1,12 +1,26 @@
-import React, { useState } from "react";
-import "./UploadedItems.css";
+import React, { useState, useEffect, Fragment } from "react";
+import "./SearchItems.css";
 import Spinner from "../../Assets/Dual Ring.svg";
 
-const UploadedItems = (props) => {
+const SearchItems = (props) => {
 	const [items, setItems] = useState([]);
 	const [title, setTitle] = useState(null);
 	const [titles, setTitles] = useState(null);
+	const [season, setSeason] = useState(1);
+	const [downloadingSrt, setDownloadingSrt] = useState(false);
 	const api = process.env.REACT_APP_THEMOVIEDB_API;
+
+	useEffect(() => {
+		(async function () {
+			const req = await fetch(
+				`https://api.themoviedb.org/3/tv/popular?api_key=${api}&language=en-US&page=1`
+			);
+			const res = await req.json();
+			setTitles(
+				res.results.filter((item) => item["origin_country"].includes("US"))
+			);
+		})();
+	}, []);
 
 	const fetchItems = async (input) => {
 		const req = await fetch(
@@ -29,12 +43,18 @@ const UploadedItems = (props) => {
 		return titles.map((title) => {
 			return (
 				<div
-					className="item"
+					className="titles"
 					key={title.title || title.original_name}
 					onClick={() => {
 						handleTitleSearch(title);
 					}}
 				>
+					<div
+						className="img"
+						style={{
+							backgroundImage: `url(https://image.tmdb.org/t/p/w500/${title.poster_path})`,
+						}}
+					></div>
 					{title.title || title.original_name}
 				</div>
 			);
@@ -53,32 +73,46 @@ const UploadedItems = (props) => {
 		setTitles(null);
 	};
 
-	const searchBar = (
-		<input
-			type="text"
-			className="search"
-			placeholder="search..."
-			onChange={handleInput}
-		/>
+	const searchBar = () => (
+		<Fragment>
+			<input
+				type="text"
+				className="search"
+				placeholder="search..."
+				onChange={handleInput}
+			/>
+			{title ? (
+				<select className="select" onChange={(e) => setSeason(e.target.value)}>
+					{title.seasons.map((seasons, index) => {
+						return (
+							<option key={index} value={index}>
+								Season {index + 1}
+							</option>
+						);
+					})}
+				</select>
+			) : null}
+		</Fragment>
 	);
 
 	const displayTitle = () => {
-		console.log(title);
 		const temp = [];
-		title.seasons.forEach((seasons) => {
-			for (let e = 1; e <= seasons.episode_count; e++) {
-				temp.push(`S${seasons.season_number}E${e}`);
-			}
-		});
-		console.log(temp);
-		return temp.map((se) => (
-			<div onClick={() => handleGetSRT(`${title.title} ${se}`)} key={se}>
-				{se}
+		for (let i = 0; i < title.seasons[season].episode_count; i++) temp.push(i);
+		return temp.map((_, index) => (
+			<div
+				className="item"
+				onClick={() =>
+					handleGetSRT(`${title.title} S${season + 1}E${index + 1}`)
+				}
+				key={index}
+			>
+				Episode{index + 1}
 			</div>
 		));
 	};
 
 	const handleGetSRT = (search) => {
+		setDownloadingSrt(true);
 		props.OpenSubtitles.search({
 			query: search,
 		}).then((subs) => {
@@ -98,20 +132,18 @@ const UploadedItems = (props) => {
 
 	return (
 		<div className="uploaded-items">
-			{searchBar}
-			<div className="items-wrapper">
-				{props.downloadingWords ? (
-					<img
-						alt="downloading...."
-						src={Spinner}
-						className="downloadingSpinner"
-					/>
-				) : (
-					display()
-				)}
+			{searchBar()}
+			<div className="overflow">
+				<div className="items-wrapper">
+					{props.downloadingWords || downloadingSrt ? (
+						<div>Loading...</div>
+					) : (
+						display()
+					)}
+				</div>
 			</div>
 		</div>
 	);
 };
 
-export default UploadedItems;
+export default SearchItems;

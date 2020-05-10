@@ -7,6 +7,12 @@ h1 {
 	cursor: pointer;
 	transition: all 0.2s ease-out;
 }
+h2 {
+	font-size: 15px;
+	cursor: pointer;
+	margin-right: auto;
+	margin-left: 20px;
+}
 h1:hover {
 	letter-spacing: 2px;
 	animation: multiColor 2s infinite linear;
