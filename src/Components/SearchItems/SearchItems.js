@@ -127,18 +127,14 @@ const SearchItems = (props) => {
 			return displayTitle();
 		}
 	};
+	if (props.downloadingWords || downloadingSrt)
+		return <div>{downloadingSrt ? "Downloading..." : "Filtering..."}</div>;
 
 	return (
 		<div className="uploaded-items">
 			{searchBar()}
 			<div className="overflow">
-				<div className="items-wrapper">
-					{props.downloadingWords || downloadingSrt ? (
-						<div>{downloadingSrt ? "Downloading..." : "Filtering..."}</div>
-					) : (
-						display()
-					)}
-				</div>
+				<div className="items-wrapper">{display()}</div>
 			</div>
 		</div>
 	);

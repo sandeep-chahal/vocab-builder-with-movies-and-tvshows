@@ -16,6 +16,7 @@ const WordsList = (props) => {
 			let words = line.split(" ");
 			let temp = [];
 			for (let word of words) {
+				// word=word.replace(,"")
 				if (word.replace(/\.|,|"|\/r|!|\?/g, "").toLowerCase() in props.words) {
 					if (normal) {
 						temp.push(

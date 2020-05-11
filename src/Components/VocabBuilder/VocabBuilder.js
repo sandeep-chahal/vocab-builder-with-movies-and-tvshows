@@ -11,7 +11,6 @@ import {
 	updateWordList,
 	uploadImportedWordsToDB,
 } from "../../firebase.utility";
-import AboutImported from "../AboutImported/AboutImported";
 import SearchItems from "../SearchItems/SearchItems";
 import OS from "opensubtitles-api";
 
@@ -21,7 +20,6 @@ const OpenSubtitles = new OS({
 	password: process.env.REACT_APP_PASSWORD,
 	ssl: true,
 });
-console.log(process.env.NODE_ENV, process.env.REACT_APP_USERNAME);
 OpenSubtitles.login().catch((err) => {
 	alert("api not working");
 	console.log(err);
@@ -117,16 +115,31 @@ class VocabBuilder extends Component {
 	getWordsFromApi = async (url) => {
 		this.setState({ downloadingWords: true });
 		const req = await fetch(url);
+		if (req.status > 299) {
+			alert(req.status);
+			window.location.reload();
+			return;
+		}
 		let result = await req.text();
-		result = result.replace(
-			`Support us and become VIP member
-		to remove all ads from www.OpenSubtitles.org`,
-			""
-		);
 		result = result.replace(/<\w>|<\/\w>|\r|/gm, "");
 		let transcript = result.split("\n");
 		transcript = transcript.filter(
-			(line) => !line.includes("-->") && !(line > -1)
+			(line) =>
+				!(
+					line.includes("-->") ||
+					line > -1 ||
+					line.includes("Support us and become VIP member") ||
+					line.includes("to remove all ads from www.OpenSubtitles.org") ||
+					line.includes("Support us and become VIP member") ||
+					line.includes("to remove all ads from www.OpenSubtitles.org") ||
+					line.includes("Advertise your product or brand here") ||
+					line.includes("contact www.OpenSubtitles.org today") ||
+					line.includes("OpenSubtitles") ||
+					line.includes("http://") ||
+					line.includes("<font") ||
+					line.includes("</font") ||
+					line.charCodeAt() > 200
+				)
 		);
 		filterWords(
 			result,
