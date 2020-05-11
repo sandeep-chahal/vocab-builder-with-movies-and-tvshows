@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Word from "./Word";
 import "./word_list_style.css";
 
@@ -7,6 +7,49 @@ const WordsList = (props) => {
 	const [learnedList, addLearned] = useState({});
 	const [learnList, addLearn] = useState({});
 	const [showWordList, setShowWordList] = useState(true);
+	const [transcripted, setTranscripted] = useState([]);
+
+	useEffect(() => {
+		let normal = "";
+		let transcript_lines = [];
+		props.transcript.map((line) => {
+			let words = line.split(" ");
+			let temp = [];
+			for (let word of words) {
+				if (word.replace(/\.|,|"|\/r|!|\?/g, "").toLowerCase() in props.words) {
+					if (normal) {
+						temp.push(
+							<div key={makeid(8)} className="normal_word">
+								{normal}
+							</div>
+						);
+						normal = "";
+					}
+					temp.push(
+						<a
+							rel="noopener noreferrer"
+							target="_blank"
+							href={`https://dictionary.cambridge.org/dictionary/english/${word}`}
+							key={word.word + makeid(3)}
+							className="learn_word"
+						>
+							{" " + word + " "}
+						</a>
+					);
+				} else normal += " " + word;
+			}
+			if (normal) {
+				temp.push(
+					<div key={normal} className="normal_word">
+						{normal}
+					</div>
+				);
+				normal = "";
+			}
+			transcript_lines.push(temp);
+		});
+		setTranscripted(transcript_lines);
+	}, []);
 
 	const addToIgnore = (word) => {
 		addIgnore({
@@ -49,34 +92,23 @@ const WordsList = (props) => {
 					moveToLearnedFromLearning={props.moveToLearnedFromLearning}
 				/>
 			));
-		// return words.map((word) => {
-		// 	if (!word) return <div key={makeid(10)} className="new_line"></div>;
-		// 	if (word.learn)
-		// 		return (
-		// 			<a
-		// 				rel="noopener noreferrer"
-		// 				target="_blank"
-		// 				href={`https://dictionary.cambridge.org/dictionary/english/${word.word}`}
-		// 				key={word.word + makeid(3)}
-		// 				className="learn_word"
-		// 			>
-		// 				{" " + word.word + " "}
-		// 			</a>
-		// 		);
-		// 	else
-		// 		return (
-		// 			<div key={word.word} className="normal_word">
-		// 				{word.word}
-		// 			</div>
-		// 		);
-		// });
+		else
+			return transcripted.map((line) => {
+				return (
+					<div key={makeid(5)} className="line">
+						{line}
+					</div>
+				);
+			});
 	};
 
 	return (
 		<div className="words-list-wrapper">
 			<div className="word-counter">
-				Total Words:{" "}
-				{/* {Object.keys(props.words).filter((word) => word && word.learn).length} */}
+				Total Words: {Object.keys(props.words).length}
+			</div>
+			<div className="switch" onClick={() => setShowWordList(!showWordList)}>
+				Switch
 			</div>
 			<div className="words-list">{displayWords(props.words)}</div>
 			{props.type === "new_words" ? (

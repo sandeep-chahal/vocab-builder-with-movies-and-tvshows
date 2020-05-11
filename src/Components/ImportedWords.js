@@ -8,6 +8,7 @@ class ImportedWords extends React.Component {
 				type="new_words"
 				words={this.props.words}
 				updateWords={this.props.updateWords}
+				transcript={this.props.transcript}
 			/>
 		);
 	}

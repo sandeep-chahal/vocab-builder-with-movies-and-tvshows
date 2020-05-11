@@ -92,7 +92,7 @@ nav {
 }
 .word {
 	background-color: var(--dark-navy-blue);
-	width: 30%;
+	min-width: 30%;
 	margin: 2rem;
 	padding: 1rem;
 	color: var(--white);

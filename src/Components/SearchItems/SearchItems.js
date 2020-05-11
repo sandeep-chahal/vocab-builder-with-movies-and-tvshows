@@ -117,7 +117,6 @@ const SearchItems = (props) => {
 			query: search,
 		}).then((subs) => {
 			props.getWordsFromApi(subs.en.utf8);
-			console.log(subs.en);
 		});
 	};
 
@@ -136,7 +135,7 @@ const SearchItems = (props) => {
 			<div className="overflow">
 				<div className="items-wrapper">
 					{props.downloadingWords || downloadingSrt ? (
-						<div>Loading...</div>
+						<div>{downloadingSrt ? "Downloading..." : "Filtering..."}</div>
 					) : (
 						display()
 					)}

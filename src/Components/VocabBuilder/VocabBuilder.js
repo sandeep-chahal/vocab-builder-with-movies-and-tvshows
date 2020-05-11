@@ -43,6 +43,7 @@ class VocabBuilder extends Component {
 		downloadingWords: false,
 		showAuth: false,
 		user: null,
+		transcript: "",
 	};
 
 	componentDidMount() {
@@ -116,7 +117,17 @@ class VocabBuilder extends Component {
 	getWordsFromApi = async (url) => {
 		this.setState({ downloadingWords: true });
 		const req = await fetch(url);
-		const result = await req.text();
+		let result = await req.text();
+		result = result.replace(
+			`Support us and become VIP member
+		to remove all ads from www.OpenSubtitles.org`,
+			""
+		);
+		result = result.replace(/<\w>|<\/\w>|\\r|/gm, "");
+		let transcript = result.split("\n");
+		transcript = transcript.filter(
+			(line) => !line.includes("-->") && !(line > -1)
+		);
 		filterWords(
 			result,
 			{ ...this.state.ignoreList, ...this.state.learnedList },
@@ -125,6 +136,7 @@ class VocabBuilder extends Component {
 					newWords: words,
 					currentSelected: "new_words",
 					downloadingWords: false,
+					transcript,
 				});
 			}
 		);
@@ -150,6 +162,7 @@ class VocabBuilder extends Component {
 				<ImportedWords
 					words={this.state.newWords}
 					updateWords={this.updateWords}
+					transcript={this.state.transcript}
 				/>
 			);
 		else if (this.state.currentSelected === "learning_words")
@@ -183,15 +196,6 @@ class VocabBuilder extends Component {
 							OpenSubtitles={OpenSubtitles}
 						/>
 					)}
-					{this.state.currentSelected === "about_imported" ? (
-						<AboutImported
-							close={() =>
-								this.setState({ currentSelected: null, newWords: null })
-							}
-							setAbout={this.handleSetAboutImported}
-							uploadingWords={this.state.uploadingWords}
-						/>
-					) : null}
 					{this.state.showAuth ? (
 						<Auth close={() => this.setState({ showAuth: false })} />
 					) : null}

@@ -10,6 +10,19 @@
 	text-decoration: none;
 	color: #333;
 }
-.new_line {
-	width: 100vw;
+.line {
+	width: 100%;
+}
+
+.word-counter,
+.switch {
+	display: inline-block;
+}
+.switch {
+	margin-left: 20px;
+	background-color: #333;
+	color: #fff;
+	padding: 5px;
+	font-size: 16px;
+	border-radius: 5px;
 }
