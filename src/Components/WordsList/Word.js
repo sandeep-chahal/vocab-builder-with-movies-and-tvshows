@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 
-const Word = props => {
-	const getButtons = type => {
+const Word = (props) => {
+	const getButtons = (type) => {
 		const learn_btn = (
 			<div
 				className="learn-btn"
@@ -40,6 +40,8 @@ const Word = props => {
 		<div className="word" style={{ opacity: `${props.stored ? 0.5 : 0.85}` }}>
 			<div className="text">
 				<a
+					id={props.word}
+					onClick={props.onClick}
 					rel="noopener noreferrer"
 					target="_blank"
 					href={`https://dictionary.cambridge.org/dictionary/english/${props.word}`}

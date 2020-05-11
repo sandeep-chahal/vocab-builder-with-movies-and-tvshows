@@ -19,6 +19,7 @@
 	display: inline-block;
 }
 .switch {
+	text-decoration: none;
 	margin-left: 20px;
 	background-color: #333;
 	color: #fff;

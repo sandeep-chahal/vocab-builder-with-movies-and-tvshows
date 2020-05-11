@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Word from "./Word";
 import "./word_list_style.css";
 
@@ -8,7 +8,7 @@ const WordsList = (props) => {
 	const [learnList, addLearn] = useState({});
 	const [showWordList, setShowWordList] = useState(true);
 	const [transcripted, setTranscripted] = useState([]);
-
+	const lastSelectedWord = useRef("");
 	useEffect(() => {
 		let normal = "";
 		let transcript_lines = [];
@@ -27,6 +27,8 @@ const WordsList = (props) => {
 					}
 					temp.push(
 						<a
+							id={word.replace(/\.|,|"|\/r|!|\?/g, "")}
+							onClick={() => (lastSelectedWord.current = word)}
 							rel="noopener noreferrer"
 							target="_blank"
 							href={`https://dictionary.cambridge.org/dictionary/english/${word}`}
@@ -82,6 +84,7 @@ const WordsList = (props) => {
 		if (showWordList)
 			return words.map((word) => (
 				<Word
+					onClick={() => (lastSelectedWord.current = word)}
 					type={props.type}
 					key={word}
 					word={word}
@@ -107,9 +110,13 @@ const WordsList = (props) => {
 			<div className="word-counter">
 				Total Words: {Object.keys(props.words).length}
 			</div>
-			<div className="switch" onClick={() => setShowWordList(!showWordList)}>
+			<a
+				href={`#${lastSelectedWord.current}`}
+				className="switch"
+				onClick={() => setShowWordList(!showWordList)}
+			>
 				Switch
-			</div>
+			</a>
 			<div className="words-list">{displayWords(props.words)}</div>
 			{props.type === "new_words" ? (
 				<div

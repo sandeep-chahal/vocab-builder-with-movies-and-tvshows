@@ -66,7 +66,6 @@ const SearchItems = (props) => {
 			`https://api.themoviedb.org/3/tv/${title.id}?api_key=${api}&language=en-US`
 		);
 		const res = await req.json();
-		console.log(res);
 		let temp = Object.values(res.seasons);
 		if (!temp[0].season_number) temp = temp.slice(1);
 		setTitle({ title: res.original_name || res.title, seasons: temp });
