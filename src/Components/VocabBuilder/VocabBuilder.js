@@ -123,7 +123,7 @@ class VocabBuilder extends Component {
 		to remove all ads from www.OpenSubtitles.org`,
 			""
 		);
-		result = result.replace(/<\w>|<\/\w>|\\r|/gm, "");
+		result = result.replace(/<\w>|<\/\w>|\r|/gm, "");
 		let transcript = result.split("\n");
 		transcript = transcript.filter(
 			(line) => !line.includes("-->") && !(line > -1)
