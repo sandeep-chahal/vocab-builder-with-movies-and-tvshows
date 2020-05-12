@@ -100,9 +100,7 @@ const SearchItems = (props) => {
 		return temp.map((_, index) => (
 			<div
 				className="item"
-				onClick={() =>
-					handleGetSRT(`${title.title} S${season + 1}E${index + 1}`)
-				}
+				onClick={() => handleGetSRT(`${title.title} S${season}E${index + 1}`)}
 				key={index}
 			>
 				Episode{index + 1}
