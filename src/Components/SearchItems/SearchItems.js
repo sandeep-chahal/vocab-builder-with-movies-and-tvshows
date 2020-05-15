@@ -6,7 +6,7 @@ const SearchItems = (props) => {
 	const [items, setItems] = useState([]);
 	const [title, setTitle] = useState(null);
 	const [titles, setTitles] = useState(null);
-	const [season, setSeason] = useState(1);
+	const [season, setSeason] = useState(0);
 	const [downloadingSrt, setDownloadingSrt] = useState(false);
 	const api = process.env.REACT_APP_THEMOVIEDB_API;
 
@@ -81,15 +81,21 @@ const SearchItems = (props) => {
 				onChange={handleInput}
 			/>
 			{title ? (
-				<select className="select" onChange={(e) => setSeason(e.target.value)}>
-					{title.seasons.map((seasons, index) => {
-						return (
-							<option key={index} value={index}>
-								Season {index + 1}
-							</option>
-						);
-					})}
-				</select>
+				<div className="title">
+					<div>{title.title}</div>
+					<select
+						className="select"
+						onChange={(e) => setSeason(parseInt(e.target.value))}
+					>
+						{title.seasons.map((seasons, index) => {
+							return (
+								<option key={index} value={index}>
+									Season {index + 1}
+								</option>
+							);
+						})}
+					</select>
+				</div>
 			) : null}
 		</Fragment>
 	);
@@ -100,7 +106,10 @@ const SearchItems = (props) => {
 		return temp.map((_, index) => (
 			<div
 				className="item"
-				onClick={() => handleGetSRT(`${title.title} S${season}E${index + 1}`)}
+				onClick={() => {
+					console.log(`${title.title} S${1 + season}E${index + 1}`);
+					handleGetSRT(`${title.title} S${1 + season}E${index + 1}`);
+				}}
 				key={index}
 			>
 				Episode{index + 1}
