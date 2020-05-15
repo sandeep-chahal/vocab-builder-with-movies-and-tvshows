@@ -10,48 +10,53 @@ const WordsList = (props) => {
 	const [transcripted, setTranscripted] = useState([]);
 	const lastSelectedWord = useRef("");
 	useEffect(() => {
-		let normal = "";
-		let transcript_lines = [];
-		props.transcript.map((line) => {
-			let words = line.split(" ");
-			let temp = [];
-			for (let word of words) {
-				// word=word.replace(,"")
-				if (word.replace(/\.|,|"|\/r|!|\?/g, "").toLowerCase() in props.words) {
+		if (props.transcript)
+			(function () {
+				let normal = "";
+				let transcript_lines = [];
+				props.transcript.map((line) => {
+					let words = line.split(" ");
+					let temp = [];
+					for (let word of words) {
+						// word=word.replace(,"")
+						if (
+							word.replace(/\.|,|"|\/r|!|\?/g, "").toLowerCase() in props.words
+						) {
+							if (normal) {
+								temp.push(
+									<div key={makeid(8)} className="normal_word">
+										{normal}
+									</div>
+								);
+								normal = "";
+							}
+							temp.push(
+								<a
+									id={word.replace(/\.|,|"|\/r|!|\?/g, "")}
+									onClick={() => (lastSelectedWord.current = word)}
+									rel="noopener noreferrer"
+									target="_blank"
+									href={`https://dictionary.cambridge.org/dictionary/english/${word}`}
+									key={word.word + makeid(3)}
+									className="learn_word"
+								>
+									{" " + word + " "}
+								</a>
+							);
+						} else normal += " " + word;
+					}
 					if (normal) {
 						temp.push(
-							<div key={makeid(8)} className="normal_word">
+							<div key={normal} className="normal_word">
 								{normal}
 							</div>
 						);
 						normal = "";
 					}
-					temp.push(
-						<a
-							id={word.replace(/\.|,|"|\/r|!|\?/g, "")}
-							onClick={() => (lastSelectedWord.current = word)}
-							rel="noopener noreferrer"
-							target="_blank"
-							href={`https://dictionary.cambridge.org/dictionary/english/${word}`}
-							key={word.word + makeid(3)}
-							className="learn_word"
-						>
-							{" " + word + " "}
-						</a>
-					);
-				} else normal += " " + word;
-			}
-			if (normal) {
-				temp.push(
-					<div key={normal} className="normal_word">
-						{normal}
-					</div>
-				);
-				normal = "";
-			}
-			transcript_lines.push(temp);
-		});
-		setTranscripted(transcript_lines);
+					transcript_lines.push(temp);
+				});
+				setTranscripted(transcript_lines);
+			})();
 	}, []);
 
 	const addToIgnore = (word) => {
@@ -111,13 +116,15 @@ const WordsList = (props) => {
 			<div className="word-counter">
 				Total Words: {Object.keys(props.words).length}
 			</div>
-			<a
-				href={`#${lastSelectedWord.current}`}
-				className="switch"
-				onClick={() => setShowWordList(!showWordList)}
-			>
-				Switch
-			</a>
+			{props.transcript ? (
+				<a
+					href={`#${lastSelectedWord.current}`}
+					className="switch"
+					onClick={() => setShowWordList(!showWordList)}
+				>
+					Switch
+				</a>
+			) : null}
 			<div className="words-list">{displayWords(props.words)}</div>
 			{props.type === "new_words" ? (
 				<div
