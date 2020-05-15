@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useRef } from "react";
 import "./VocabBuilder.css";
 import Spinner from "../../Assets/Infinity-loader.svg";
 
@@ -43,6 +43,7 @@ class VocabBuilder extends Component {
 		user: null,
 		transcript: "",
 	};
+	resetSearchItem = () => {};
 
 	componentDidMount() {
 		firebase.auth().onAuthStateChanged((user) => {
@@ -99,11 +100,13 @@ class VocabBuilder extends Component {
 	};
 
 	//reset state when clicked on header to come back on home page
-	resetState = () =>
+	resetState = () => {
+		this.resetSearchItem();
 		this.setState({
 			currentSelected: null,
 			newWords: null,
 		});
+	};
 
 	handleSetAboutImported = (about) => {
 		this.setState({ uploadingWords: true });
@@ -204,6 +207,7 @@ class VocabBuilder extends Component {
 						renderingComponent
 					) : (
 						<SearchItems
+							resetSearchItem={(fn) => (this.resetSearchItem = fn)}
 							downloadingWords={this.state.downloadingWords}
 							getWordsFromApi={this.getWordsFromApi}
 							OpenSubtitles={OpenSubtitles}

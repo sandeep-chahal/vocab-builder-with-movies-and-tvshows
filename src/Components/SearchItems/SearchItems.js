@@ -11,7 +11,14 @@ const SearchItems = (props) => {
 	const api = process.env.REACT_APP_THEMOVIEDB_API;
 
 	useEffect(() => {
-		(async function () {
+		props.resetSearchItem(() => {
+			fetchTrending();
+			setTitle(null);
+			setTitles(null);
+			setSeason(0);
+			setDownloadingSrt(false);
+		});
+		async function fetchTrending() {
 			const req = await fetch(
 				`https://api.themoviedb.org/3/tv/popular?api_key=${api}&language=en-US&page=1`
 			);
@@ -19,7 +26,8 @@ const SearchItems = (props) => {
 			setTitles(
 				res.results.filter((item) => item["origin_country"].includes("US"))
 			);
-		})();
+		}
+		fetchTrending();
 	}, []);
 
 	const fetchItems = async (input) => {
@@ -90,7 +98,7 @@ const SearchItems = (props) => {
 						{title.seasons.map((seasons, index) => {
 							return (
 								<option key={index} value={index}>
-									Season {index + 1}
+									{window.innerWidth < 650 ? "S" : "Season"} {index + 1}
 								</option>
 							);
 						})}
