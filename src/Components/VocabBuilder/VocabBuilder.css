@@ -43,9 +43,17 @@ main {
 
 nav {
 	display: flex;
-	justify-content: space-between;
 	padding: 0 2rem;
 	align-items: center;
+	justify-content: center;
+}
+.visited-btn {
+	margin-left: 1rem;
+	font-size: 1.6rem;
+	cursor: pointer;
+}
+.visited-btn:hover {
+	text-decoration: underline;
 }
 .auth-btn {
 	font-size: 1.4rem;

@@ -59,47 +59,20 @@ const WordsList = (props) => {
 			})();
 	}, []);
 
-	const addToIgnore = (word) => {
-		addIgnore({
-			...ignoreList,
-			[word]: true,
-		});
-	};
-
-	const addToLearn = (word) => {
-		addLearn({
-			...learnList,
-			[word]: true,
-		});
-	};
-	const addToLearned = (word) => {
-		addLearned({
-			...learnedList,
-			[word]: true,
-		});
-	};
-
-	const resetLists = () => {
-		addIgnore({});
-		addLearn({});
-		addLearned({});
-	};
-
 	const displayWords = (words) => {
 		words = Object.keys(props.words || {});
 		if (showWordList)
 			return words.map((word) => (
 				<Word
-					onClick={() => (lastSelectedWord.current = word)}
-					type={props.type}
+					onClick={() => {
+						lastSelectedWord.current = word;
+						props.addToVisited(word);
+					}}
 					key={word}
-					word={word}
-					addToLearn={addToLearn}
-					addToIgnore={addToIgnore}
-					addToLearned={addToLearned}
-					stored={ignoreList[word] || learnedList[word] || learnList[word]}
-					moveToLearnedFromLearning={props.moveToLearnedFromLearning}
-				/>
+					visited={props.visitedWords[word]}
+				>
+					{word}
+				</Word>
 			));
 		else
 			return transcripted.map((line) => {
@@ -126,7 +99,7 @@ const WordsList = (props) => {
 				</a>
 			) : null}
 			<div className="words-list">{displayWords(props.words)}</div>
-			{props.type === "new_words" ? (
+			{/* {props.type === "new_words" ? (
 				<div
 					className="update-btn"
 					onClick={() =>
@@ -136,7 +109,7 @@ const WordsList = (props) => {
 				>
 					Update
 				</div>
-			) : null}
+			) : null} */}
 		</div>
 	);
 };

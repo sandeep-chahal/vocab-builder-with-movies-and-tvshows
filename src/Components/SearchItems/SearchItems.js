@@ -1,14 +1,18 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import "./SearchItems.css";
 import Spinner from "../../Assets/Dual Ring.svg";
 
 const SearchItems = (props) => {
-	const [items, setItems] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [mode, setMode] = useState("trending"); //trending, title, search
 	const [title, setTitle] = useState(null);
-	const [titles, setTitles] = useState(null);
+	const [titles, setTitles] = useState([]);
+	const [trending, setTrending] = useState([]);
 	const [season, setSeason] = useState(0);
 	const [downloadingSrt, setDownloadingSrt] = useState(false);
 	const api = process.env.REACT_APP_THEMOVIEDB_API;
+
+	const inputRef = useRef();
 
 	useEffect(() => {
 		props.resetSearchItem(() => {
@@ -17,42 +21,51 @@ const SearchItems = (props) => {
 			setTitles(null);
 			setSeason(0);
 			setDownloadingSrt(false);
+			setMode("trending");
 		});
 		async function fetchTrending() {
 			const req = await fetch(
 				`https://api.themoviedb.org/3/tv/popular?api_key=${api}&language=en-US&page=1`
 			);
 			const res = await req.json();
-			setTitles(
+			setTrending(
 				res.results.filter((item) => item["origin_country"].includes("US"))
 			);
+			setMode("trending");
+			setLoading(false);
 		}
 		fetchTrending();
 	}, []);
 
 	const fetchItems = async (input) => {
+		setLoading(true);
 		const req = await fetch(
 			`https://api.themoviedb.org/3/search/multi?api_key=${api}&language=en-US&query=${input}&page=1&include_adult=false`
 		);
 		const res = await req.json();
 		setTitles(res.results);
+		setMode("search");
+		setLoading(false);
 	};
 
 	const handleInput = (e) => {
 		const input = e.target.value;
-		if (input.length > 2) {
-			fetchItems(input);
-		} else if (!items.length) {
-			setItems([]);
-		}
+		if (input.slice()) return;
+		setMode("trending");
+	};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const input = inputRef.current.value;
+		if (input.slice().length < 3) return alert("not enough input");
+		fetchItems(input);
 	};
 
-	const displayTitles = () => {
-		return titles.map((title) => {
+	const displayTitles = (titles = []) => {
+		return titles.map((title, i) => {
 			return (
 				<div
 					className="titles"
-					key={title.title || title.original_name}
+					key={makeid(5)}
 					onClick={() => {
 						handleTitleSearch(title);
 					}}
@@ -70,25 +83,35 @@ const SearchItems = (props) => {
 	};
 
 	const handleTitleSearch = async (title) => {
-		const req = await fetch(
-			`https://api.themoviedb.org/3/tv/${title.id}?api_key=${api}&language=en-US`
-		);
-		const res = await req.json();
-		let temp = Object.values(res.seasons);
-		if (!temp[0].season_number) temp = temp.slice(1);
-		setTitle({ title: res.original_name || res.title, seasons: temp });
-		setTitles(null);
+		try {
+			setLoading(true);
+			const req = await fetch(
+				`https://api.themoviedb.org/3/tv/${title.id}?api_key=${api}&language=en-US`
+			);
+			const res = await req.json();
+			let temp = Object.values(res.seasons);
+			if (!temp[0].season_number) temp = temp.slice(1);
+			setTitle({ title: res.original_name || res.title, seasons: temp });
+			setMode("title");
+			setLoading(false);
+		} catch (err) {
+			console.log(err);
+			alert("something went wrong");
+		}
 	};
 
 	const searchBar = () => (
 		<Fragment>
-			<input
-				type="text"
-				className="search"
-				placeholder="search..."
-				onChange={handleInput}
-			/>
-			{title ? (
+			<form onSubmit={handleSubmit}>
+				<input
+					ref={inputRef}
+					type="text"
+					className="search"
+					placeholder="search..."
+					onChange={handleInput}
+				/>
+			</form>
+			{mode === "title" && !loading ? (
 				<div className="title">
 					<div>{title.title}</div>
 					<select
@@ -115,7 +138,6 @@ const SearchItems = (props) => {
 			<div
 				className="item"
 				onClick={() => {
-					console.log(`${title.title} S${1 + season}E${index + 1}`);
 					handleGetSRT(`${title.title} S${1 + season}E${index + 1}`);
 				}}
 				key={index}
@@ -126,21 +148,19 @@ const SearchItems = (props) => {
 	};
 
 	const handleGetSRT = (search) => {
-		setDownloadingSrt(true);
+		setLoading(true);
 		props.OpenSubtitles.search({
 			query: search,
 		}).then((subs) => {
 			props.getWordsFromApi(subs.en.utf8);
+			setLoading(false);
 		});
 	};
 
 	const display = () => {
-		if (titles) {
-			return displayTitles();
-		}
-		if (title) {
-			return displayTitle();
-		}
+		if (mode === "trending") return displayTitles(trending);
+		else if (mode === "title") return displayTitle();
+		else if (mode === "search") return displayTitles(titles);
 	};
 	if (props.downloadingWords || downloadingSrt)
 		return <div>{downloadingSrt ? "Downloading..." : "Filtering..."}</div>;
@@ -149,10 +169,24 @@ const SearchItems = (props) => {
 		<div className="uploaded-items">
 			{searchBar()}
 			<div className="overflow">
-				<div className="items-wrapper">{display()}</div>
+				{loading ? (
+					<div style={{ textAlign: "center" }}>Loading</div>
+				) : (
+					<div className="items-wrapper">{display()}</div>
+				)}
 			</div>
 		</div>
 	);
 };
 
 export default SearchItems;
+function makeid(length) {
+	var result = "";
+	var characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	var charactersLength = characters.length;
+	for (var i = 0; i < length; i++) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+}

@@ -5,9 +5,10 @@ class ImportedWords extends React.Component {
 	render() {
 		return (
 			<WordsList
-				type="new_words"
+				type={this.props.type}
 				words={this.props.words}
-				updateWords={this.props.updateWords}
+				visitedWords={this.props.visitedWords}
+				addToVisited={this.props.addToVisited}
 				transcript={this.props.transcript}
 			/>
 		);
