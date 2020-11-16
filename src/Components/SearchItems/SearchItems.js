@@ -165,15 +165,12 @@ const SearchItems = (props) => {
 	if (props.downloadingWords || downloadingSrt)
 		return <div>{downloadingSrt ? "Downloading..." : "Filtering..."}</div>;
 
+	if (loading) return <img className="spinner" alt="loading" src={Spinner} />;
 	return (
 		<div className="uploaded-items">
 			{searchBar()}
 			<div className="overflow">
-				{loading ? (
-					<div style={{ textAlign: "center" }}>Loading</div>
-				) : (
-					<div className="items-wrapper">{display()}</div>
-				)}
+				<div className="items-wrapper">{display()}</div>
 			</div>
 		</div>
 	);

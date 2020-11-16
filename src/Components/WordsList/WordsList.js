@@ -3,9 +3,6 @@ import Word from "./Word";
 import "./word_list_style.css";
 
 const WordsList = (props) => {
-	const [ignoreList, addIgnore] = useState({});
-	const [learnedList, addLearned] = useState({});
-	const [learnList, addLearn] = useState({});
 	const [showWordList, setShowWordList] = useState(true);
 	const [transcripted, setTranscripted] = useState([]);
 	const lastSelectedWord = useRef("");
@@ -99,17 +96,6 @@ const WordsList = (props) => {
 				</a>
 			) : null}
 			<div className="words-list">{displayWords(props.words)}</div>
-			{/* {props.type === "new_words" ? (
-				<div
-					className="update-btn"
-					onClick={() =>
-						props.updateWords(ignoreList, learnedList, learnList) ||
-						resetLists()
-					}
-				>
-					Update
-				</div>
-			) : null} */}
 		</div>
 	);
 };

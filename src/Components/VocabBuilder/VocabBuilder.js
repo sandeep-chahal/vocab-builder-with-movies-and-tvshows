@@ -1,4 +1,4 @@
-import React, { Component, useRef } from "react";
+import React, { Component } from "react";
 import "./VocabBuilder.css";
 import Spinner from "../../Assets/Infinity-loader.svg";
 import ImportedWords from "../ImportedWords";

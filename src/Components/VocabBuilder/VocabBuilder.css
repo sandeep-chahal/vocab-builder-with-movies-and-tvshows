@@ -85,21 +85,20 @@ nav {
 .words-list {
 	padding: 2rem;
 	margin-top: 2rem;
-	background-color: var(--sky-blue);
+	background-color: var(--word-list-bg);
 	padding: 2rem 0 0 4rem;
-	border-radius: 4rem;
+	border-radius: 1rem;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: flex-start;
-
 	height: 70vh;
 	width: 95vw;
 	overflow-x: hidden;
 	overflow-y: scroll;
 }
 .word {
-	background-color: var(--dark-navy-blue);
+	background-color: var(--word-bg);
 	min-width: 30%;
 	margin: 2rem;
 	padding: 1rem;
@@ -108,6 +107,10 @@ nav {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	transition: all 0.1s ease-out;
+}
+.word:hover {
+	transform: translateY(-1px) scaleX(1.01);
 }
 
 .btns {
